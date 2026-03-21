@@ -417,4 +417,626 @@ body.light {
     0%, 100% {
         height: 20%;
     }
+            50% {
+        height: 100%;
+    }
+}
+
+.message-time {
+    font-size: 10px;
+    margin-top: 4px;
+    opacity: 0.7;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.message-status {
+    font-size: 10px;
+}
+
+.message-reactions {
+    display: flex;
+    gap: 6px;
+    margin-top: 6px;
+    flex-wrap: wrap;
+}
+
+.reaction {
+    background: var(--bg-tertiary);
+    border-radius: 20px;
+    padding: 2px 8px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.reaction:hover {
+    background: var(--bg-hover);
+    transform: scale(1.05);
+}
+
+.reaction-count {
+    font-size: 10px;
+    color: var(--text-secondary);
+}
+
+.message-edit-indicator {
+    font-size: 10px;
+    opacity: 0.6;
+    margin-left: 6px;
+}
+
+.message-menu {
+    position: absolute;
+    right: -32px;
+    top: 8px;
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.message:hover .message-menu {
+    opacity: 1;
+}
+
+.message-menu-btn {
+    background: var(--bg-tertiary);
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 12px;
+}
+
+.message-menu-btn:hover {
+    background: var(--accent-color);
+    color: white;
+}
+
+/* ========== ОБЛАСТЬ ВВОДА ========== */
+.typing-indicator {
+    padding: 8px 24px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    background: var(--bg-primary);
+    border-top: 1px solid var(--border-color);
+}
+
+.input-area {
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border-color);
+    padding: 16px 24px;
+}
+
+.input-tools {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.tool-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 20px;
+    padding: 6px;
+    border-radius: 8px;
+    transition: var(--transition);
+}
+
+.tool-btn:hover {
+    background: var(--bg-hover);
+    color: var(--accent-color);
+}
+
+.message-input-wrapper {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+#messageInput {
+    flex: 1;
+    padding: 12px 16px;
+    background: var(--bg-tertiary);
+    border: none;
+    border-radius: 24px;
+    color: var(--text-primary);
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    transition: var(--transition);
+}
+
+#messageInput:focus {
+    outline: none;
+    background: var(--bg-hover);
+}
+
+.send-btn {
+    background: var(--accent-color);
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 12px;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+
+.send-btn:hover {
+    background: var(--accent-hover);
+    transform: scale(1.05);
+}
+
+.send-btn:active {
+    transform: scale(0.95);
+}
+
+/* ========== ПАНЕЛЬ ПРОФИЛЯ ========== */
+.profile-panel {
+    width: 360px;
+    background: var(--bg-secondary);
+    border-left: 1px solid var(--border-color);
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    position: fixed;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 1000;
+}
+
+.profile-panel.open {
+    transform: translateX(0);
+}
+
+.profile-header {
+    padding: 20px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.close-profile-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 20px;
+    padding: 8px;
+    border-radius: 8px;
+}
+
+.close-profile-btn:hover {
+    background: var(--bg-hover);
+}
+
+.profile-content {
+    padding: 24px;
+    text-align: center;
+}
+
+.profile-avatar-large {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 20px;
+}
+
+.profile-avatar-large img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--accent-color);
+}
+
+.change-avatar-btn {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    background: var(--accent-color);
+    border: none;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+
+.change-avatar-btn:hover {
+    transform: scale(1.1);
+}
+
+.profile-content h2 {
+    margin-bottom: 8px;
+    font-size: 24px;
+}
+
+.user-bio {
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+}
+
+.profile-stats {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-bottom: 32px;
+    padding: 16px;
+    background: var(--bg-tertiary);
+    border-radius: 12px;
+}
+
+.stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.stat i {
+    font-size: 24px;
+    color: var(--accent-color);
+}
+
+.stat span {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.profile-menu {
+    text-align: left;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px;
+    border-radius: 10px;
+    transition: var(--transition);
+    cursor: pointer;
+    margin-bottom: 4px;
+}
+
+.menu-item:hover {
+    background: var(--bg-hover);
+}
+
+.menu-item i:first-child {
+    width: 32px;
+    color: var(--accent-color);
+}
+
+.menu-item select {
+    background: var(--bg-tertiary);
+    border: none;
+    color: var(--text-primary);
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* ========== ПЕРЕКЛЮЧАТЕЛЬ (TOGGLE SWITCH) ========== */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--bg-tertiary);
+    transition: 0.3s;
+    border-radius: 24px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.3s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: var(--accent-color);
+}
+
+input:checked + .slider:before {
+    transform: translateX(20px);
+}
+
+/* ========== МОДАЛЬНЫЕ ОКНА ========== */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal.open {
+    display: flex;
+    animation: fadeIn 0.2s ease;
+}
+
+.modal-content {
+    background: var(--bg-secondary);
+    border-radius: 20px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 80vh;
+    overflow: hidden;
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    padding: 20px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 24px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 8px;
+}
+
+.close-modal:hover {
+    background: var(--bg-hover);
+}
+
+.sticker-grid, .emoji-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 16px;
+    padding: 20px;
+    overflow-y: auto;
+    max-height: 60vh;
+}
+
+.sticker {
+    font-size: 48px;
+    text-align: center;
+    padding: 16px;
+    cursor: pointer;
+    border-radius: 12px;
+    transition: var(--transition);
+}
+
+.sticker:hover {
+    background: var(--bg-hover);
+    transform: scale(1.1);
+}
+
+.emoji-grid {
+    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+}
+
+.emoji {
+    font-size: 32px;
+    text-align: center;
+    padding: 12px;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.emoji:hover {
+    background: var(--bg-hover);
+    transform: scale(1.1);
+}
+
+/* ========== КОНТЕКСТНОЕ МЕНЮ ========== */
+.context-menu {
+    position: fixed;
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 8px;
+    z-index: 3000;
+    min-width: 180px;
+    animation: fadeIn 0.1s ease;
+}
+
+.context-menu-item {
+    padding: 10px 16px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.context-menu-item:hover {
+    background: var(--bg-hover);
+}
+
+.context-menu-item.danger {
+    color: var(--danger);
+}
+
+/* ========== СКРОЛЛБАР ========== */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-tertiary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--accent-color);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-hover);
+}
+
+/* ========== АДАПТИВНОСТЬ ========== */
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed;
+        left: -100%;
+        transition: left 0.3s ease;
+        z-index: 1000;
+        width: 85%;
+        max-width: 320px;
+    }
+    
+    .sidebar.open {
+        left: 0;
+    }
+    
+    .profile-panel {
+        width: 100%;
+    }
+    
+    .chat-header {
+        padding: 12px 16px;
+    }
+    
+    .chat-actions .action-btn:not(:first-child) {
+        display: none;
+    }
+    
+    .message-bubble {
+        max-width: 85%;
+    }
+    
+    .input-area {
+        padding: 12px 16px;
+    }
+    
+    .message-menu {
+        opacity: 1;
+        position: static;
+        margin-left: 8px;
+    }
+}
+
+/* ========== АНИМАЦИИ ========== */
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
     50% {
+        transform: scale(1.05);
+    }
+}
+
+.voice-recording {
+    animation: pulse 1s infinite;
+    color: var(--danger);
+}
+
+.loading-spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--bg-tertiary);
+    border-top-color: var(--accent-color);
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ========== УВЕДОМЛЕНИЯ ========== */
+.notification-toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--bg-secondary);
+    border-left: 4px solid var(--accent-color);
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 2000;
+    animation: slideInRight 0.3s ease;
+    max-width: 320px;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.notification-toast.hide {
+    animation: slideOutRight 0.3s ease forwards;
+}
+
+@keyframes slideOutRight {
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
