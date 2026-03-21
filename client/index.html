@@ -2,25 +2,176 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#6366f1">
     <title>Nexora - Современный мессенджер</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div class="app-container">
+    <!-- ЭКРАН ЗАГРУЗКИ -->
+    <div class="splash-screen" id="splashScreen">
+        <div class="splash-content">
+            <div class="splash-logo">
+                <div class="logo-icon">
+                    <i class="fas fa-comment-dots"></i>
+                </div>
+                <h1>Nexora</h1>
+            </div>
+            <div class="splash-loader">
+                <div class="loader-bar"></div>
+                <div class="loader-bar"></div>
+                <div class="loader-bar"></div>
+            </div>
+            <p class="splash-text">Загрузка мессенджера...</p>
+        </div>
+    </div>
+
+    <!-- ЭКРАН АВТОРИЗАЦИИ -->
+    <div class="auth-screen" id="authScreen" style="display: none;">
+        <div class="auth-container">
+            <div class="auth-card">
+                <div class="auth-header">
+                    <div class="auth-logo">
+                        <i class="fas fa-comment-dots"></i>
+                    </div>
+                    <h1>Nexora</h1>
+                    <p>Современный способ общения</p>
+                </div>
+                
+                <div class="auth-tabs">
+                    <button class="auth-tab active" data-tab="login">Вход</button>
+                    <button class="auth-tab" data-tab="register">Регистрация</button>
+                </div>
+                
+                <!-- Форма входа -->
+                <form id="loginForm" class="auth-form active">
+                    <div class="input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" placeholder="Email" id="loginEmail" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" placeholder="Пароль" id="loginPassword" required>
+                    </div>
+                    <button type="submit" class="auth-btn">Войти</button>
+                    <div class="demo-accounts">
+                        <p>Демо-аккаунты:</p>
+                        <div class="demo-buttons">
+                            <button type="button" class="demo-btn" data-email="alex@example.com">Алексей</button>
+                            <button type="button" class="demo-btn" data-email="maria@example.com">Мария</button>
+                            <button type="button" class="demo-btn" data-email="dmitry@example.com">Дмитрий</button>
+                        </div>
+                    </div>
+                </form>
+                
+                <!-- Форма регистрации -->
+                <form id="registerForm" class="auth-form">
+                    <div class="input-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" placeholder="Имя пользователя" id="regUsername" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" placeholder="Email" id="regEmail" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" placeholder="Пароль" id="regPassword" required>
+                    </div>
+                    <div class="avatar-selector">
+                        <p>Выберите аватар:</p>
+                        <div class="avatar-options" id="avatarOptions">
+                            <div class="avatar-option" data-avatar="1">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=1">
+                            </div>
+                            <div class="avatar-option" data-avatar="2">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=2">
+                            </div>
+                            <div class="avatar-option" data-avatar="3">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=3">
+                            </div>
+                            <div class="avatar-option" data-avatar="4">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=4">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="terms-checkbox">
+                        <input type="checkbox" id="termsAgree" required>
+                        <label for="termsAgree">Я согласен с <a href="#" id="termsLink">условиями использования</a> и <a href="#" id="privacyLink">политикой конфиденциальности</a></label>
+                    </div>
+                    <button type="submit" class="auth-btn">Создать аккаунт</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛЬНОЕ ОКНО УСЛОВИЙ -->
+    <div class="modal" id="termsModal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>Условия использования Nexora</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body terms-content">
+                <h4>1. Общие положения</h4>
+                <p>Nexora - это современный мессенджер, предоставляющий возможность обмена сообщениями, медиафайлами и голосовыми сообщениями. Используя сервис, вы соглашаетесь с данными условиями.</p>
+                
+                <h4>2. Конфиденциальность</h4>
+                <p>Мы уважаем вашу конфиденциальность. Все сообщения шифруются и хранятся только на вашем устройстве. Мы не передаем данные третьим лицам.</p>
+                
+                <h4>3. Правила поведения</h4>
+                <p>Запрещается: спам, оскорбления, распространение запрещенного контента, нарушение авторских прав, мошенничество.</p>
+                
+                <h4>4. Ответственность</h4>
+                <p>Пользователь несет ответственность за все действия, совершенные в аккаунте. Администрация не несет ответственности за содержание сообщений.</p>
+                
+                <h4>5. Изменения условий</h4>
+                <p>Мы оставляем право изменять условия использования. О важных изменениях мы уведомим вас по email.</p>
+                
+                <h4>6. Контакты</h4>
+                <p>По вопросам: support@nexora.com</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛЬНОЕ ОКНО ПОЛИТИКИ -->
+    <div class="modal" id="privacyModal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>Политика конфиденциальности</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body terms-content">
+                <h4>Какие данные мы собираем?</h4>
+                <p>• Имя пользователя и email<br>• Аватар (по вашему выбору)<br>• История сообщений (только на вашем устройстве)<br>• Технические данные (IP, браузер)</p>
+                
+                <h4>Как мы используем данные?</h4>
+                <p>• Для обеспечения работы мессенджера<br>• Для улучшения сервиса<br>• Для связи с вами по важным вопросам</p>
+                
+                <h4>Безопасность</h4>
+                <p>Мы используем современные методы шифрования для защиты ваших данных. Ваши сообщения доступны только вам и вашим собеседникам.</p>
+                
+                <h4>Ваши права</h4>
+                <p>Вы можете удалить свой аккаунт и все связанные с ним данные в любой момент.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ОСНОВНОЙ ИНТЕРФЕЙС -->
+    <div class="app-container" id="appContainer" style="display: none;">
         <!-- Боковая панель -->
         <aside class="sidebar">
             <div class="sidebar-header">
                 <div class="user-profile" id="userProfileBtn">
                     <div class="avatar-container">
-                        <img src="https://ui-avatars.com/api/?background=6366f1&color=fff&bold=true&size=45&name=Я" alt="Profile" class="avatar">
+                        <img src="" alt="Profile" class="avatar" id="userAvatar">
                         <div class="online-indicator"></div>
                     </div>
                     <div class="user-info">
-                        <h3>Александр</h3>
-                        <p>Активен сейчас</p>
+                        <h3 id="userName">Загрузка...</h3>
+                        <p id="userStatus">онлайн</p>
                     </div>
                     <button class="settings-btn">
                         <i class="fas fa-cog"></i>
@@ -33,16 +184,26 @@
             </div>
             
             <div class="chats-list" id="chatsList">
-                <!-- Чаты будут загружены динамически -->
+                <div class="loading-chats">
+                    <div class="spinner"></div>
+                    <p>Загрузка чатов...</p>
+                </div>
             </div>
+            
+            <button class="create-chat-fab" id="createChatFab">
+                <i class="fas fa-plus"></i>
+            </button>
         </aside>
         
         <!-- Основная область чата -->
         <main class="chat-area">
             <div class="chat-header" id="chatHeader">
                 <div class="chat-info">
+                    <button class="mobile-menu-btn" id="mobileMenuBtn">
+                        <i class="fas fa-bars"></i>
+                    </button>
                     <div class="chat-avatar">
-                        <img src="https://ui-avatars.com/api/?background=6366f1&color=fff&bold=true&size=40&name=Chat" alt="Chat" id="chatAvatar">
+                        <img src="" alt="Chat" id="chatAvatar">
                     </div>
                     <div class="chat-details">
                         <h2 id="chatName">Выберите чат</h2>
@@ -50,44 +211,54 @@
                     </div>
                 </div>
                 <div class="chat-actions">
-                    <button class="action-btn" id="searchMessagesBtn">
+                    <button class="action-btn" id="searchMessagesBtn" title="Поиск по сообщениям">
                         <i class="fas fa-search"></i>
                     </button>
-                    <button class="action-btn" id="chatInfoBtn">
+                    <button class="action-btn" id="chatInfoBtn" title="Информация о чате">
                         <i class="fas fa-info-circle"></i>
                     </button>
-                    <button class="action-btn" id="callBtn">
-                        <i class="fas fa-phone"></i>
+                    <button class="action-btn" id="exportChatBtn" title="Экспорт чата">
+                        <i class="fas fa-download"></i>
                     </button>
-                    <button class="action-btn" id="videoCallBtn">
-                        <i class="fas fa-video"></i>
+                    <button class="action-btn" id="callBtn" title="Аудиозвонок">
+                        <i class="fas fa-phone"></i>
                     </button>
                 </div>
             </div>
             
             <div class="messages-container" id="messagesContainer">
                 <div class="messages-area" id="messagesArea">
-                    <!-- Сообщения будут загружены динамически -->
+                    <div class="welcome-message">
+                        <div class="welcome-icon">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <h3>Добро пожаловать в Nexora</h3>
+                        <p>Выберите чат, чтобы начать общение</p>
+                    </div>
                 </div>
             </div>
             
             <div class="typing-indicator" id="typingIndicator" style="display: none;">
-                <span>✍️</span>
+                <div class="typing-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
                 <span id="typingText">Кто-то печатает...</span>
             </div>
             
             <div class="input-area">
                 <div class="input-tools">
-                    <button class="tool-btn" id="emojiBtn">
+                    <button class="tool-btn" id="emojiBtn" title="Эмодзи">
                         <i class="far fa-smile-wink"></i>
                     </button>
-                    <button class="tool-btn" id="stickerBtn">
+                    <button class="tool-btn" id="stickerBtn" title="Стикеры">
                         <i class="far fa-laugh-squint"></i>
                     </button>
-                    <button class="tool-btn" id="voiceBtn">
+                    <button class="tool-btn" id="voiceBtn" title="Голосовое сообщение (удерживайте)">
                         <i class="fas fa-microphone"></i>
                     </button>
-                    <button class="tool-btn" id="attachBtn">
+                    <button class="tool-btn" id="attachBtn" title="Прикрепить файл">
                         <i class="fas fa-paperclip"></i>
                     </button>
                 </div>
@@ -100,31 +271,41 @@
             </div>
         </main>
         
-        <!-- Панель профиля (правая) -->
+        <!-- Панель профиля -->
         <aside class="profile-panel" id="profilePanel">
             <div class="profile-header">
                 <button class="close-profile-btn" id="closeProfileBtn">
                     <i class="fas fa-times"></i>
                 </button>
-                <h3>Профиль</h3>
+                <h3>Мой профиль</h3>
             </div>
             <div class="profile-content">
-                <div class="profile-avatar-large">
-                    <img src="https://ui-avatars.com/api/?background=6366f1&color=fff&bold=true&size=120&name=Александр" alt="Profile">
-                    <button class="change-avatar-btn">
+                <div class="profile-avatar-large" id="profileAvatarContainer">
+                    <img src="" alt="Profile" id="profileAvatar">
+                    <button class="change-avatar-btn" id="changeAvatarBtn">
                         <i class="fas fa-camera"></i>
                     </button>
                 </div>
-                <h2>Александр</h2>
-                <p class="user-bio">Full-stack разработчик | Создатель Nexora</p>
+                <div class="profile-info-edit">
+                    <input type="text" id="editUsername" class="edit-input" placeholder="Имя пользователя">
+                    <textarea id="editBio" class="edit-textarea" placeholder="О себе" rows="3"></textarea>
+                    <button class="save-profile-btn" id="saveProfileBtn">Сохранить изменения</button>
+                </div>
                 <div class="profile-stats">
                     <div class="stat">
                         <i class="fas fa-comments"></i>
-                        <span>4 чата</span>
+                        <span id="statChats">0</span>
+                        <small>чатов</small>
+                    </div>
+                                        <div class="stat">
+                        <i class="fas fa-calendar"></i>
+                        <span id="statMemberSince">2024</span>
+                        <small>на сайте</small>
                     </div>
                     <div class="stat">
-                        <i class="fas fa-calendar"></i>
-                        <span>С 2024</span>
+                        <i class="fas fa-envelope"></i>
+                        <span id="statMessages">0</span>
+                        <small>сообщений</small>
                     </div>
                 </div>
                 <div class="profile-menu">
@@ -132,13 +313,13 @@
                         <i class="fas fa-bell"></i>
                         <span>Уведомления</span>
                         <label class="switch">
-                            <input type="checkbox" checked>
+                            <input type="checkbox" id="notificationsToggle" checked>
                             <span class="slider"></span>
                         </label>
                     </div>
                     <div class="menu-item">
                         <i class="fas fa-palette"></i>
-                        <span>Тема</span>
+                        <span>Тема оформления</span>
                         <select id="themeSelect">
                             <option value="dark">Темная</option>
                             <option value="light">Светлая</option>
@@ -146,16 +327,29 @@
                         </select>
                     </div>
                     <div class="menu-item">
+                        <i class="fas fa-language"></i>
+                        <span>Язык</span>
+                        <select id="languageSelect">
+                            <option value="ru">Русский</option>
+                            <option value="en">English</option>
+                        </select>
+                    </div>
+                    <div class="menu-item" id="logoutBtn">
                         <i class="fas fa-sign-out-alt"></i>
                         <span>Выйти</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                    <div class="menu-item danger" id="deleteAccountBtn">
+                        <i class="fas fa-trash-alt"></i>
+                        <span>Удалить аккаунт</span>
                         <i class="fas fa-chevron-right"></i>
                     </div>
                 </div>
             </div>
         </aside>
     </div>
-    
-    <!-- Модальное окно стикеров -->
+
+    <!-- МОДАЛЬНОЕ ОКНО СТИКЕРОВ -->
     <div class="modal" id="stickerModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -175,11 +369,15 @@
                 <div class="sticker" data-sticker="🎉">🎉</div>
                 <div class="sticker" data-sticker="❤️">❤️</div>
                 <div class="sticker" data-sticker="👍">👍</div>
+                <div class="sticker" data-sticker="🙏">🙏</div>
+                <div class="sticker" data-sticker="🤝">🤝</div>
+                <div class="sticker" data-sticker="💪">💪</div>
+                <div class="sticker" data-sticker="🎨">🎨</div>
             </div>
         </div>
     </div>
     
-    <!-- Модальное окно эмодзи -->
+    <!-- МОДАЛЬНОЕ ОКНО ЭМОДЗИ -->
     <div class="modal" id="emojiModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -190,6 +388,53 @@
         </div>
     </div>
     
+    <!-- МОДАЛЬНОЕ ОКНО ИНФОРМАЦИИ О ЧАТЕ -->
+    <div class="modal" id="chatInfoModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Информация о чате</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body" id="chatInfoContent"></div>
+        </div>
+    </div>
+    
+    <!-- МОДАЛЬНОЕ ОКНО ПОДТВЕРЖДЕНИЯ -->
+    <div class="modal" id="confirmModal">
+        <div class="modal-content confirm-modal">
+            <div class="modal-header">
+                <h3 id="confirmTitle">Подтверждение</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage">Вы уверены?</p>
+                <div class="confirm-buttons">
+                    <button class="confirm-no">Отмена</button>
+                    <button class="confirm-yes">Да</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- УВЕДОМЛЕНИЕ -->
+    <div id="notificationContainer"></div>
+    
+    <!-- ЗАПИСЬ ГОЛОСА -->
+    <div class="voice-recording-panel" id="voiceRecordingPanel" style="display: none;">
+        <div class="voice-recording-content">
+            <div class="voice-wave-animation">
+                <div class="wave"></div>
+                <div class="wave"></div>
+                <div class="wave"></div>
+                <div class="wave"></div>
+                <div class="wave"></div>
+            </div>
+            <p>Запись... Отпустите для отправки</p>
+            <span id="recordingTime">0:00</span>
+        </div>
+    </div>
+    
     <script src="app.js"></script>
 </body>
 </html>
+                       
