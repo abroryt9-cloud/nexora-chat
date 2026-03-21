@@ -1,52 +1,195 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nexora</title>
-
-<link rel="stylesheet" href="style.css">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Nexora - Современный мессенджер</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-
-<div id="login" class="screen active">
-  <div class="center">
-    <h2>Nexora</h2>
-    <input id="username" placeholder="Введите имя">
-    <button onclick="start()">Войти</button>
-  </div>
-</div>
-
-<div id="app" class="screen">
-  <div class="app">
-
-    <!-- sidebar -->
-    <div class="sidebar">
-      <div class="topbar">
-        <span>Nexora</span>
-      </div>
-      <div id="chatList"></div>
+    <div class="app-container">
+        <!-- Боковая панель -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="user-profile" id="userProfileBtn">
+                    <div class="avatar-container">
+                        <img src="https://ui-avatars.com/api/?background=6366f1&color=fff&bold=true&size=45&name=Я" alt="Profile" class="avatar">
+                        <div class="online-indicator"></div>
+                    </div>
+                    <div class="user-info">
+                        <h3>Александр</h3>
+                        <p>Активен сейчас</p>
+                    </div>
+                    <button class="settings-btn">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                </div>
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Поиск чатов или сообщений..." id="searchInput">
+                </div>
+            </div>
+            
+            <div class="chats-list" id="chatsList">
+                <!-- Чаты будут загружены динамически -->
+            </div>
+        </aside>
+        
+        <!-- Основная область чата -->
+        <main class="chat-area">
+            <div class="chat-header" id="chatHeader">
+                <div class="chat-info">
+                    <div class="chat-avatar">
+                        <img src="https://ui-avatars.com/api/?background=6366f1&color=fff&bold=true&size=40&name=Chat" alt="Chat" id="chatAvatar">
+                    </div>
+                    <div class="chat-details">
+                        <h2 id="chatName">Выберите чат</h2>
+                        <p id="chatStatus">Нажмите на чат чтобы начать общение</p>
+                    </div>
+                </div>
+                <div class="chat-actions">
+                    <button class="action-btn" id="searchMessagesBtn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <button class="action-btn" id="chatInfoBtn">
+                        <i class="fas fa-info-circle"></i>
+                    </button>
+                    <button class="action-btn" id="callBtn">
+                        <i class="fas fa-phone"></i>
+                    </button>
+                    <button class="action-btn" id="videoCallBtn">
+                        <i class="fas fa-video"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="messages-container" id="messagesContainer">
+                <div class="messages-area" id="messagesArea">
+                    <!-- Сообщения будут загружены динамически -->
+                </div>
+            </div>
+            
+            <div class="typing-indicator" id="typingIndicator" style="display: none;">
+                <span>✍️</span>
+                <span id="typingText">Кто-то печатает...</span>
+            </div>
+            
+            <div class="input-area">
+                <div class="input-tools">
+                    <button class="tool-btn" id="emojiBtn">
+                        <i class="far fa-smile-wink"></i>
+                    </button>
+                    <button class="tool-btn" id="stickerBtn">
+                        <i class="far fa-laugh-squint"></i>
+                    </button>
+                    <button class="tool-btn" id="voiceBtn">
+                        <i class="fas fa-microphone"></i>
+                    </button>
+                    <button class="tool-btn" id="attachBtn">
+                        <i class="fas fa-paperclip"></i>
+                    </button>
+                </div>
+                <div class="message-input-wrapper">
+                    <input type="text" id="messageInput" placeholder="Введите сообщение..." autocomplete="off">
+                    <button class="send-btn" id="sendBtn">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Панель профиля (правая) -->
+        <aside class="profile-panel" id="profilePanel">
+            <div class="profile-header">
+                <button class="close-profile-btn" id="closeProfileBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+                <h3>Профиль</h3>
+            </div>
+            <div class="profile-content">
+                <div class="profile-avatar-large">
+                    <img src="https://ui-avatars.com/api/?background=6366f1&color=fff&bold=true&size=120&name=Александр" alt="Profile">
+                    <button class="change-avatar-btn">
+                        <i class="fas fa-camera"></i>
+                    </button>
+                </div>
+                <h2>Александр</h2>
+                <p class="user-bio">Full-stack разработчик | Создатель Nexora</p>
+                <div class="profile-stats">
+                    <div class="stat">
+                        <i class="fas fa-comments"></i>
+                        <span>4 чата</span>
+                    </div>
+                    <div class="stat">
+                        <i class="fas fa-calendar"></i>
+                        <span>С 2024</span>
+                    </div>
+                </div>
+                <div class="profile-menu">
+                    <div class="menu-item">
+                        <i class="fas fa-bell"></i>
+                        <span>Уведомления</span>
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="menu-item">
+                        <i class="fas fa-palette"></i>
+                        <span>Тема</span>
+                        <select id="themeSelect">
+                            <option value="dark">Темная</option>
+                            <option value="light">Светлая</option>
+                            <option value="auto">Системная</option>
+                        </select>
+                    </div>
+                    <div class="menu-item">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Выйти</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+            </div>
+        </aside>
     </div>
-
-    <!-- chat -->
-    <div class="chat">
-      <div class="chat-header">
-        <span id="chatTitle">Общий чат</span>
-      </div>
-
-      <div id="messages" class="messages"></div>
-
-      <div class="bottom">
-        <input id="msgInput" placeholder="Сообщение...">
-        <button onclick="send()">➤</button>
-      </div>
+    
+    <!-- Модальное окно стикеров -->
+    <div class="modal" id="stickerModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Выберите стикер</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="sticker-grid" id="stickerGrid">
+                <div class="sticker" data-sticker="😊">😊</div>
+                <div class="sticker" data-sticker="😂">😂</div>
+                <div class="sticker" data-sticker="🥰">🥰</div>
+                <div class="sticker" data-sticker="😎">😎</div>
+                <div class="sticker" data-sticker="🤔">🤔</div>
+                <div class="sticker" data-sticker="😭">😭</div>
+                <div class="sticker" data-sticker="🔥">🔥</div>
+                <div class="sticker" data-sticker="✨">✨</div>
+                <div class="sticker" data-sticker="💯">💯</div>
+                <div class="sticker" data-sticker="🎉">🎉</div>
+                <div class="sticker" data-sticker="❤️">❤️</div>
+                <div class="sticker" data-sticker="👍">👍</div>
+            </div>
+        </div>
     </div>
-
-  </div>
-</div>
-
-<script src="app.js"></script>
-
+    
+    <!-- Модальное окно эмодзи -->
+    <div class="modal" id="emojiModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Эмодзи</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="emoji-grid" id="emojiGrid"></div>
+        </div>
+    </div>
+    
+    <script src="app.js"></script>
 </body>
 </html>
