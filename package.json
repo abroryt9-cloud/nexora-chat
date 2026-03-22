@@ -1,17 +1,26 @@
 {
-  "name": "nexora-ultimate",
+  "name": "nexora",
   "version": "1.0.0",
-  "description": "Современный мессенджер с AI, NFT, кошельком и 50+ языками",
-  "main": "server/server.js",
+  "private": true,
+  "workspaces": [
+    "server",
+    "client",
+    "admin",
+    "shared"
+  ],
   "scripts": {
-    "start": "node server/server.js",
-    "dev": "nodemon server/server.js"
-  },
-  "dependencies": {
-    "express": "^4.18.2",
-    "ws": "^8.14.2"
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\" \"npm run dev:admin\"",
+    "dev:server": "cd server && npm run dev",
+    "dev:client": "cd client && npm run dev",
+    "dev:admin": "cd admin && npm run dev",
+    "build": "npm run build:shared && npm run build:server && npm run build:client && npm run build:admin",
+    "build:shared": "cd shared && npm run build",
+    "build:server": "cd server && npm run build",
+    "build:client": "cd client && npm run build",
+    "build:admin": "cd admin && npm run build",
+    "start": "cd server && npm start"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "concurrently": "^8.2.2"
   }
 }
