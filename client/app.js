@@ -1,742 +1,566 @@
 // ========== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ==========
-let ws = null;
-let currentUserId = null;
-let currentUsername = '';
-let currentUserAvatar = '';
-let currentUserEmail = '';
+let currentUser = null;
 let currentChatId = null;
+let ws = null;
 let messagesCache = new Map();
 let chatsCache = new Map();
-let currentLanguage = 'ru';
 let currentTheme = 'dark';
-let achievements = [];
-let walletBalance = 0;
+let currentLanguage = 'ru';
+let walletBalance = 1250;
 let userNFTs = [];
-let typingTimeout = null;
-let mediaRecorder = null;
-let isRecording = false;
-let recordingStartTime = null;
+let userAchievements = [];
+let userStats = { messages: 0, reactions: 0, stickers: 0, voice: 0, streak: 0 };
+let aiMessages = [];
 
-// 50+ языков с переводами
-const translations = {
-    ru: {
-        welcome: 'Добро пожаловать в Nexora',
-        online: 'онлайн',
-        offline: 'офлайн',
-        typing: 'печатает...',
-        send_message: 'Введите сообщение...',
-        // ... более 500 переводов
-    },
-    en: {
-        welcome: 'Welcome to Nexora',
-        online: 'online',
-        offline: 'offline',
-        typing: 'typing...',
-        send_message: 'Enter message...',
-    },
-    // ... остальные 48+ языков
+// 50+ языков
+const languages = {
+    ru: '🇷🇺 Русский', en: '🇬🇧 English', es: '🇪🇸 Español', fr: '🇫🇷 Français', de: '🇩🇪 Deutsch',
+    it: '🇮🇹 Italiano', pt: '🇵🇹 Português', nl: '🇳🇱 Nederlands', pl: '🇵🇱 Polski', uk: '🇺🇦 Українська',
+    zh: '🇨🇳 中文', ja: '🇯🇵 日本語', ko: '🇰🇷 한국어', ar: '🇸🇦 العربية', hi: '🇮🇳 हिन्दी',
+    tr: '🇹🇷 Türkçe', vi: '🇻🇳 Tiếng Việt', th: '🇹🇭 ไทย', id: '🇮🇩 Indonesia', ms: '🇲🇾 Melayu',
+    sv: '🇸🇪 Svenska', da: '🇩🇰 Dansk', no: '🇳🇴 Norsk', fi: '🇫🇮 Suomi', cs: '🇨🇿 Čeština',
+    sk: '🇸🇰 Slovenčina', hu: '🇭🇺 Magyar', ro: '🇷🇴 Română', bg: '🇧🇬 Български', el: '🇬🇷 Ελληνικά',
+    he: '🇮🇱 עברית', fa: '🇮🇷 فارسی', bn: '🇧🇩 বাংলা', ta: '🇮🇳 தமிழ்', te: '🇮🇳 తెలుగు',
+    ml: '🇮🇳 മലയാളം', kn: '🇮🇳 ಕನ್ನಡ', mr: '🇮🇳 मराठी', gu: '🇮🇳 ગુજરાતી', pa: '🇮🇳 ਪੰਜਾਬੀ'
+};
+
+// Стикеры по категориям
+const stickerPacks = {
+    happy: ['😊', '🥰', '😍', '🤗', '😁', '😆', '😂', '🤣'],
+    funny: ['😜', '🤪', '😝', '😛', '🤑', '🤡', '👻', '🎃'],
+    love: ['❤️', '💕', '💖', '💗', '💓', '💘', '💝', '💟'],
+    cool: ['😎', '🔥', '💪', '✨', '⭐', '🌟', '💫', '⚡'],
+    animals: ['🐱', '🐶', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼']
+};
+
+// GIF библиотека
+const gifLibrary = {
+    trending: [
+        'https://media.tenor.com/2GcJkqH5oEsAAAAC/welcome.gif',
+        'https://media.tenor.com/4KvHjRgHnZQAAAAC/hi-hello.gif'
+    ],
+    funny: [
+        'https://media.tenor.com/5B3hJzRgLmMAAAAC/funny-laugh.gif',
+        'https://media.tenor.com/9CvHkRgNnP4AAAAC/omg.gif'
+    ],
+    love: [
+        'https://media.tenor.com/2GcJkqH5oEsAAAAC/love.gif',
+        'https://media.tenor.com/4KvHjRgHnZQAAAAC/kiss.gif'
+    ]
+};
+
+// NFT коллекция
+const nftCollection = [
+    { id: 1, name: 'Космический Кот', image: 'https://api.dicebear.com/7.x/icons/svg?seed=cosmic-cat', value: 500 },
+    { id: 2, name: 'Галактический Лис', image: 'https://api.dicebear.com/7.x/icons/svg?seed=galaxy-fox', value: 750 },
+    { id: 3, name: 'Звездный Дракон', image: 'https://api.dicebear.com/7.x/icons/svg?seed=star-dragon', value: 1200 }
+];
+
+// Достижения
+const achievementsList = [
+    { id: 'first_msg', name: 'Первый шаг', desc: 'Отправить первое сообщение', icon: '💬', requirement: 1, unlocked: false },
+    { id: 'msg_100', name: 'Говорун', desc: 'Отправить 100 сообщений', icon: '🗣️', requirement: 100, unlocked: false },
+    { id: 'sticker_lover', name: 'Стикероман', desc: 'Отправить 50 стикеров', icon: '🎨', requirement: 50, unlocked: false },
+    { id: 'reaction_master', name: 'Мастер реакций', desc: 'Поставить 50 реакций', icon: '🎭', requirement: 50, unlocked: false },
+    { id: 'voice_master', name: 'Голосовой актер', desc: 'Отправить 10 голосовых', icon: '🎤', requirement: 10, unlocked: false },
+    { id: 'nft_collector', name: 'Коллекционер', desc: 'Собрать 3 NFT', icon: '💎', requirement: 3, unlocked: false },
+    { id: 'streak_7', name: 'Неделя в Nexora', desc: 'Активен 7 дней подряд', icon: '🔥', requirement: 7, unlocked: false }
+];
+
+// Тестовые чаты
+const testChats = {
+    'chat1': { id: 'chat1', name: 'Алексей Смирнов', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Alex', type: 'personal', status: 'online' },
+    'chat2': { id: 'chat2', name: 'Dev Team 🚀', avatar: 'https://api.dicebear.com/7.x/identicon/svg?seed=Dev', type: 'group', members: 5, status: 'online' },
+    'chat3': { id: 'chat3', name: 'Мария Иванова', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Maria', type: 'personal', status: 'away' }
+};
+
+// Тестовые сообщения
+let testMessages = {
+    'chat1': [
+        { id: 'msg1', text: 'Привет! Добро пожаловать в Nexora! 🎉', senderId: 'user1', senderName: 'Алексей', time: Date.now() - 3600000, own: false, reactions: ['🎉', '❤️'] },
+        { id: 'msg2', text: 'Спасибо! Крутой мессенджер!', senderId: 'current', senderName: 'Я', time: Date.now() - 3500000, own: true, reactions: [] }
+    ],
+    'chat2': [
+        { id: 'msg3', text: 'Коллеги, сегодня созвон в 18:00', senderId: 'user2', senderName: 'Дмитрий', time: Date.now() - 7200000, own: false, reactions: ['👍'] },
+        { id: 'msg4', text: 'Буду!', senderId: 'current', senderName: 'Я', time: Date.now() - 7100000, own: true, reactions: [] }
+    ],
+    'chat3': []
 };
 
 // ========== ИНИЦИАЛИЗАЦИЯ ==========
 document.addEventListener('DOMContentLoaded', () => {
-    initParticles();
-    initTypingAnimation();
     initProgressBar();
-    loadUserPreferences();
-    setupEventListeners();
-    initStickerPacks();
-    initGifLibrary();
-    initNFTCollection();
+    initEventListeners();
+    initLanguageGrid();
+    initStickerGrid();
+    initGifGrid();
+    initNFTGrid();
     initAchievements();
+    loadTheme();
+    initMobileMenu();
+    initAIAssistant();
 });
 
-// Инициализация частиц
-function initParticles() {
-    const canvas = document.getElementById('starCanvas');
-    if (!canvas) return;
-    
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    
-    const stars = [];
-    for (let i = 0; i < 200; i++) {
-        stars.push({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            radius: Math.random() * 2,
-            alpha: Math.random(),
-            speed: Math.random() * 0.5
-        });
-    }
-    
-    function animateStars() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        stars.forEach(star => {
-            ctx.beginPath();
-            ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(255, 255, 255, ${star.alpha})`;
-            ctx.fill();
-            star.y += star.speed;
-            if (star.y > canvas.height) star.y = 0;
-        });
-        requestAnimationFrame(animateStars);
-    }
-    
-    animateStars();
-}
-
-// Анимация печатающего текста
-function initTypingAnimation() {
-    const words = ['Общение', 'Творчество', 'Вдохновение', 'Дружба', 'Идеи', 'Будущее'];
-    let index = 0;
-    const element = document.getElementById('typingWords');
-    
-    if (element) {
-        setInterval(() => {
-            element.textContent = words[index];
-            index = (index + 1) % words.length;
-        }, 2000);
-    }
-}
-
-// Прогресс бар загрузки
 function initProgressBar() {
     let progress = 0;
     const fill = document.getElementById('progressFill');
-    const text = document.getElementById('splashText');
-    const steps = [
-        'Загрузка квантовых модулей...',
-        'Инициализация AI ассистента...',
-        'Подготовка 50+ языков...',
-        'Загрузка NFT галереи...',
-        'Настройка крипто-кошелька...',
-        'Готово! Добро пожаловать!'
-    ];
+    const text = document.getElementById('loadingText');
+    const steps = ['Загрузка модулей...', 'Инициализация AI...', 'Загрузка NFT...', 'Настройка языков...', 'Готово!'];
     
     const interval = setInterval(() => {
-        progress += 2;
-        if (fill) fill.style.width = progress + '%';
+        progress += 1.5;
+        if (fill) fill.style.width = Math.min(progress, 100) + '%';
         
-        const stepIndex = Math.floor(progress / 16);
-        if (text && steps[stepIndex]) text.textContent = steps[stepIndex];
+        const step = Math.floor(progress / 20);
+        if (text && steps[step]) text.textContent = steps[step];
         
         if (progress >= 100) {
             clearInterval(interval);
             setTimeout(() => {
-                const splash = document.getElementById('splashScreen');
-                if (splash) splash.style.display = 'none';
-                showAuthScreen();
+                document.getElementById('splash').style.display = 'none';
+                document.getElementById('authScreen').style.display = 'flex';
             }, 500);
         }
-    }, 50);
+    }, 40);
 }
 
-// Загрузка пользовательских настроек
-function loadUserPreferences() {
-    const savedLanguage = localStorage.getItem('nexora_language');
-    const savedTheme = localStorage.getItem('nexora_theme');
-    const savedWallet = localStorage.getItem('nexora_wallet');
-    
-    if (savedLanguage) currentLanguage = savedLanguage;
-    if (savedTheme) currentTheme = savedTheme;
-    if (savedWallet) walletBalance = parseInt(savedWallet) || 0;
-    
-    applyTheme(currentTheme);
-    applyLanguage(currentLanguage);
-}
-
-// Применение языка
-function applyLanguage(lang) {
-    currentLanguage = lang;
-    localStorage.setItem('nexora_language', lang);
-    
-    const t = translations[lang] || translations.ru;
-    
-    // Обновляем текст интерфейса
-    document.querySelectorAll('[data-translate]').forEach(el => {
-        const key = el.getAttribute('data-translate');
-        if (t[key]) el.textContent = t[key];
+function initEventListeners() {
+    // Авторизация
+    document.querySelectorAll('.auth-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            const tabName = tab.dataset.tab;
+            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+            document.getElementById(`${tabName}Form`).classList.add('active');
+        });
     });
+    
+    document.getElementById('loginForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value;
+        if (email) loginUser(email);
+    });
+    
+    document.getElementById('registerForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('regName').value;
+        const email = document.getElementById('regEmail').value;
+        if (name && email) registerUser(name, email);
+    });
+    
+    document.querySelectorAll('.demo-user').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const email = btn.dataset.email;
+            document.getElementById('loginEmail').value = email;
+            loginUser(email);
+        });
+    });
+    
+    // Отправка сообщения
+    document.getElementById('sendBtn').addEventListener('click', sendMessage);
+    document.getElementById('messageInput').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
+    
+    // Профиль и панели
+    document.getElementById('profileBtn').addEventListener('click', () => togglePanel('rightPanel'));
+    document.getElementById('closePanelBtn').addEventListener('click', () => togglePanel('rightPanel'));
+    document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+    document.getElementById('languageMenu').addEventListener('click', () => openModal('languageModal'));
+    document.getElementById('nftMenu').addEventListener('click', () => openModal('nftModal'));
+    document.getElementById('walletMenu').addEventListener('click', () => openModal('walletModal'));
+    document.getElementById('achievementsMenu').addEventListener('click', () => openModal('achievementsModal'));
+    document.getElementById('statsMenu').addEventListener('click', showStats);
+    document.getElementById('logoutBtn').addEventListener('click', logout);
+    
+    // Инструменты чата
+    document.getElementById('emojiBtn').addEventListener('click', insertEmoji);
+    document.getElementById('stickerBtn').addEventListener('click', () => openModal('stickerModal'));
+    document.getElementById('gifBtn').addEventListener('click', () => openModal('gifModal'));
+    document.getElementById('voiceBtn').addEventListener('click', startVoiceRecording);
+    document.getElementById('pollBtn').addEventListener('click', () => openModal('pollModal'));
+    document.getElementById('scheduleBtn').addEventListener('click', showScheduleModal);
+    document.getElementById('aiBtn').addEventListener('click', toggleAIPanel);
+    
+    // Опросы
+    document.getElementById('addPollOption').addEventListener('click', addPollOption);
+    document.getElementById('createPollBtn').addEventListener('click', createPoll);
+    
+    // Фильтры чатов
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            filterChats(btn.dataset.filter);
+        });
+    });
+    
+    // Смена аватара
+    document.getElementById('changeAvatarBtn').addEventListener('click', changeAvatar);
 }
 
-// Стикер паки
-function initStickerPacks() {
-    const stickerPacks = {
-        happy: ['😊', '🥰', '😍', '🤗', '😁', '😆', '😂', '🤣'],
-        funny: ['😜', '🤪', '😝', '😛', '🤑', '🤡', '👻', '🎃'],
-        love: ['❤️', '💕', '💖', '💗', '💓', '💘', '💝', '💟'],
-        sad: ['😢', '😭', '😔', '🥺', '😞', '😟', '😤', '😫'],
-        cool: ['😎', '🔥', '💪', '✨', '⭐', '🌟', '💫', '⚡'],
-        animals: ['🐱', '🐶', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼']
+function loginUser(email) {
+    const name = email.split('@')[0];
+    currentUser = {
+        id: 'current',
+        name: name.charAt(0).toUpperCase() + name.slice(1),
+        email: email,
+        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${name}`,
+        bio: '🌟 Пользователь Nexora'
     };
     
-    window.stickerPacks = stickerPacks;
+    document.getElementById('userName').textContent = currentUser.name;
+    document.getElementById('userAvatar').src = currentUser.avatar;
+    document.getElementById('profileAvatar').src = currentUser.avatar;
+    document.getElementById('profileName').textContent = currentUser.name;
+    document.getElementById('profileBio').textContent = currentUser.bio;
+    document.getElementById('walletBalance').textContent = walletBalance + ' NXR';
+    
+    document.getElementById('authScreen').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+    
+    loadChats();
+    initWebSocket();
+    showNotification(`✨ Добро пожаловать, ${currentUser.name}!`, 'success');
 }
 
-// GIF библиотека
-function initGifLibrary() {
-    const gifs = {
-        trending: [
-            'https://media.giphy.com/media/3o7abB06u9bNzA8LC8/giphy.gif',
-            'https://media.giphy.com/media/l0MYEq5B6W7JXQ0Wk/giphy.gif',
-            'https://media.giphy.com/media/xT9IgzoKnwFNmISR8I/giphy.gif'
-        ],
-        funny: [
-            'https://media.giphy.com/media/3o7abB06u9bNzA8LC8/giphy.gif',
-            'https://media.giphy.com/media/l0MYEq5B6W7JXQ0Wk/giphy.gif'
-        ],
-        reaction: [
-            'https://media.giphy.com/media/3o7abB06u9bNzA8LC8/giphy.gif',
-            'https://media.giphy.com/media/l0MYEq5B6W7JXQ0Wk/giphy.gif'
-        ]
+function registerUser(name, email) {
+    currentUser = {
+        id: 'current',
+        name: name,
+        email: email,
+        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${name}`,
+        bio: 'Новый пользователь Nexora'
     };
-    
-    window.gifLibrary = gifs;
+    loginUser(email);
 }
 
-// NFT коллекция
-function initNFTCollection() {
-    const defaultNFTs = [
-        { id: 1, name: 'Cosmic Cat', image: 'https://via.placeholder.com/150', value: 100 },
-        { id: 2, name: 'Galaxy Fox', image: 'https://via.placeholder.com/150', value: 250 },
-        { id: 3, name: 'Space Dragon', image: 'https://via.placeholder.com/150', value: 500 }
-    ];
-    
-    userNFTs = JSON.parse(localStorage.getItem('nexora_nfts')) || defaultNFTs;
+function logout() {
+    if (ws) ws.close();
+    currentUser = null;
+    currentChatId = null;
+    document.getElementById('app').style.display = 'none';
+    document.getElementById('authScreen').style.display = 'flex';
+    document.getElementById('rightPanel').classList.remove('open');
+    showNotification('👋 До свидания!', 'info');
 }
 
-// Достижения
-function initAchievements() {
-    const allAchievements = [
-        { id: 'first_message', name: 'Первый шаг', desc: 'Отправить первое сообщение', icon: '💬', requirement: 1, progress: 0 },
-        { id: 'message_100', name: 'Говорун', desc: 'Отправить 100 сообщений', icon: '🗣️', requirement: 100, progress: 0 },
-                { id: 'message_1000', name: 'Легенда общения', desc: 'Отправить 1000 сообщений', icon: '👑', requirement: 1000, progress: 0 },
-        { id: 'reaction_master', name: 'Мастер реакций', desc: 'Поставить 50 реакций', icon: '🎭', requirement: 50, progress: 0 },
-        { id: 'voice_master', name: 'Голосовой актер', desc: 'Отправить 10 голосовых', icon: '🎤', requirement: 10, progress: 0 },
-        { id: 'sticker_lover', name: 'Стикероман', desc: 'Отправить 50 стикеров', icon: '🎨', requirement: 50, progress: 0 },
-        { id: 'night_owl', name: 'Ночная сова', desc: 'Активен после полуночи', icon: '🦉', requirement: 1, progress: 0 },
-        { id: 'early_bird', name: 'Ранняя пташка', desc: 'Активен в 5 утра', icon: '🐦', requirement: 1, progress: 0 },
-        { id: 'group_lover', name: 'Душа компании', desc: 'Состоит в 5 группах', icon: '👥', requirement: 5, progress: 0 },
-        { id: 'channel_creator', name: 'Создатель канала', desc: 'Создать канал', icon: '📢', requirement: 1, progress: 0 },
-        { id: 'nft_collector', name: 'Коллекционер NFT', desc: 'Собрать 3 NFT', icon: '💎', requirement: 3, progress: 0 },
-        { id: 'millionaire', name: 'Крипто-магнат', desc: 'Накопить 1000 NXR', icon: '💰', requirement: 1000, progress: 0 },
-        { id: 'ai_friend', name: 'Друг AI', desc: 'Задать 100 вопросов AI', icon: '🤖', requirement: 100, progress: 0 }
-    ];
-    
-    achievements = JSON.parse(localStorage.getItem('nexora_achievements')) || allAchievements;
-    updateAchievementsUI();
-}
-
-// Обновление достижений
-function updateAchievementsUI() {
-    const totalUnlocked = achievements.filter(a => a.progress >= a.requirement).length;
-    const totalPoints = achievements.reduce((sum, a) => sum + (a.progress >= a.requirement ? 10 : 0), 0);
-    
-    const level = Math.floor(totalPoints / 50) + 1;
-    const rank = getRankByLevel(level);
-    
-    document.getElementById('totalAchievements').textContent = totalUnlocked;
-    document.getElementById('achievementPoints').textContent = totalPoints;
-    document.getElementById('achievementRank').textContent = rank;
-    document.getElementById('userLevel').textContent = level;
-}
-
-function getRankByLevel(level) {
-    if (level >= 50) return '👑 Легенда';
-    if (level >= 30) return '🌟 Мастер';
-    if (level >= 20) return '⚔️ Воин';
-    if (level >= 10) return '📚 Ученик';
-    if (level >= 5) return '🌱 Новичок';
-    return '✨ Искатель';
-}
-
-// ========== WEBSOCKET СОЕДИНЕНИЕ ==========
+// ========== WEBSOCKET ==========
 function initWebSocket() {
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = `${protocol}//${window.location.host}`;
-    
-    ws = new WebSocket(wsUrl);
+    const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+    ws = new WebSocket(`${protocol}//${location.host}`);
     
     ws.onopen = () => {
-        console.log('✨ WebSocket соединение установлено');
-        showNotification('Соединение установлено', 'success');
+        ws.send(JSON.stringify({ type: 'register', userId: currentUser.id }));
+        showNotification('🔌 Соединение установлено', 'success');
     };
     
     ws.onmessage = (event) => {
-        try {
-            const data = JSON.parse(event.data);
-            handleWebSocketMessage(data);
-        } catch (error) {
-            console.error('Ошибка:', error);
-        }
+        const data = JSON.parse(event.data);
+        handleWebSocketMessage(data);
     };
     
-    ws.onerror = (error) => {
-        console.error('WebSocket ошибка:', error);
-        showNotification('Ошибка соединения', 'error');
-    };
-    
-    ws.onclose = () => {
-        console.log('WebSocket закрыт');
-        setTimeout(() => initWebSocket(), 3000);
-    };
+    ws.onerror = () => showNotification('⚠️ Ошибка соединения', 'error');
+    ws.onclose = () => setTimeout(initWebSocket, 3000);
 }
 
-// Обработка сообщений от сервера
 function handleWebSocketMessage(data) {
     switch(data.type) {
-        case 'auth_success':
-            handleAuthSuccess(data.data);
+        case 'chats':
+            chatsCache = new Map(data.data.map(c => [c.id, c]));
+            renderChats();
             break;
-        case 'chats_list':
-            updateChatsList(data.data);
+        case 'messages':
+            messagesCache.set(data.data.chatId, data.data.messages);
+            if (currentChatId === data.data.chatId) renderMessages();
             break;
         case 'new_message':
-            receiveNewMessage(data.data);
-            break;
-        case 'message_edited':
-            updateEditedMessage(data.data);
-            break;
-        case 'message_deleted':
-            deleteMessageFromUI(data.data);
-            break;
-        case 'reaction_updated':
-            updateMessageReactions(data.data);
+            if (!messagesCache.has(data.data.chatId)) messagesCache.set(data.data.chatId, []);
+            messagesCache.get(data.data.chatId).push(data.data);
+            if (currentChatId === data.data.chatId) {
+                renderMessages();
+                playNotificationSound();
+            } else {
+                showNotification(`📩 Новое сообщение от ${data.data.senderName}`, 'info');
+                updateUnreadCount(data.data.chatId);
+            }
+            updateStatsAfterMessage();
             break;
         case 'user_typing':
-            showTypingIndicator(data.data);
+            if (currentChatId === data.data.chatId) showTypingIndicator(data.data.isTyping);
             break;
-        case 'achievement_unlocked':
-            showAchievementNotification(data.data);
-            break;
-        case 'gift_received':
-            showGiftNotification(data.data);
-            break;
-        case 'nft_minted':
-            addNFTToCollection(data.data);
-            break;
-        case 'wallet_updated':
-            updateWalletBalance(data.data);
-            break;
-        case 'poll_updated':
-            updatePollResults(data.data);
-            break;
-        case 'message_pinned':
-            showPinnedMessage(data.data);
+        case 'reaction_added':
+            updateMessageReaction(data.data);
             break;
     }
 }
 
-// ========== АВТОРИЗАЦИЯ ==========
-function showAuthScreen() {
-    const authScreen = document.getElementById('authScreen');
-    const appContainer = document.getElementById('appContainer');
-    
-    if (authScreen) authScreen.style.display = 'flex';
-    if (appContainer) appContainer.style.display = 'none';
-    
-    initCosmicBackground();
-    initAvatarOptions();
-    initLanguageGrid();
+// ========== ЧАТЫ ==========
+function loadChats() {
+    chatsCache = new Map(Object.entries(testChats));
+    renderChats();
+    updateStats();
 }
 
-function initCosmicBackground() {
-    const canvas = document.getElementById('particlesBg');
-    if (!canvas) return;
+function renderChats() {
+    const container = document.getElementById('chatsList');
+    container.innerHTML = '';
     
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    
-    const particles = [];
-    for (let i = 0; i < 100; i++) {
-        particles.push({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            radius: Math.random() * 3,
-            alpha: Math.random(),
-            speedX: (Math.random() - 0.5) * 0.5,
-            speedY: (Math.random() - 0.5) * 0.5
-        });
-    }
-    
-    function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        particles.forEach(p => {
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(99, 102, 241, ${p.alpha * 0.3})`;
-            ctx.fill();
-            p.x += p.speedX;
-            p.y += p.speedY;
-            if (p.x < 0) p.x = canvas.width;
-            if (p.x > canvas.width) p.x = 0;
-            if (p.y < 0) p.y = canvas.height;
-            if (p.y > canvas.height) p.y = 0;
-        });
-        requestAnimationFrame(animate);
-    }
-    
-    animate();
-}
-
-function initAvatarOptions() {
-    const container = document.getElementById('avatarOptions');
-    if (!container) return;
-    
-    const avatars = [
-        'https://api.dicebear.com/7.x/avataaars/svg?seed=1&backgroundColor=6366f1',
-        'https://api.dicebear.com/7.x/avataaars/svg?seed=2&backgroundColor=ec489a',
-        'https://api.dicebear.com/7.x/avataaars/svg?seed=3&backgroundColor=10b981',
-        'https://api.dicebear.com/7.x/avataaars/svg?seed=4&backgroundColor=f59e0b',
-        'https://api.dicebear.com/7.x/avataaars/svg?seed=5&backgroundColor=8b5cf6',
-        'https://api.dicebear.com/7.x/avataaars/svg?seed=6&backgroundColor=ef4444',
-        'https://api.dicebear.com/7.x/avataaars/svg?seed=7&backgroundColor=3b82f6',
-        'https://api.dicebear.com/7.x/avataaars/svg?seed=8&backgroundColor=14b8a6'
-    ];
-    
-    container.innerHTML = avatars.map((url, i) => `
-        <div class="avatar-option" data-avatar="${url}">
-            <img src="${url}" alt="Avatar ${i+1}">
-            <div class="avatar-check"><i class="fas fa-check"></i></div>
-        </div>
-    `).join('');
-    
-    document.querySelectorAll('.avatar-option').forEach(opt => {
-        opt.addEventListener('click', () => {
-            document.querySelectorAll('.avatar-option').forEach(o => o.classList.remove('selected'));
-            opt.classList.add('selected');
-            window.selectedAvatar = opt.getAttribute('data-avatar');
-        });
+    chatsCache.forEach(chat => {
+        const messages = messagesCache.get(chat.id) || [];
+        const lastMsg = messages[messages.length - 1];
+        
+        const div = document.createElement('div');
+        div.className = `chat-item ${currentChatId === chat.id ? 'active' : ''}`;
+        div.setAttribute('data-chat-id', chat.id);
+        div.innerHTML = `
+            <img src="${chat.avatar}" class="avatar">
+            <div class="chat-info">
+                <div class="chat-name">${escapeHtml(chat.name)}</div>
+                <div class="chat-preview">${lastMsg ? escapeHtml(lastMsg.text.substring(0, 30)) : 'Нет сообщений'}</div>
+            </div>
+            <div class="chat-time">${lastMsg ? formatTime(lastMsg.time) : ''}</div>
+        `;
+        div.onclick = () => switchChat(chat.id);
+        container.appendChild(div);
     });
 }
 
-function initLanguageGrid() {
-    const container = document.getElementById('languageGridFull');
-    if (!container) return;
+function switchChat(chatId) {
+    currentChatId = chatId;
+    const chat = chatsCache.get(chatId);
     
-    const languages = [
-        { code: 'ru', name: 'Русский', flag: '🇷🇺', native: 'Русский' },
-        { code: 'en', name: 'English', flag: '🇬🇧', native: 'English' },
-        { code: 'es', name: 'Español', flag: '🇪🇸', native: 'Español' },
-        { code: 'fr', name: 'Français', flag: '🇫🇷', native: 'Français' },
-        { code: 'de', name: 'Deutsch', flag: '🇩🇪', native: 'Deutsch' },
-        { code: 'it', name: 'Italiano', flag: '🇮🇹', native: 'Italiano' },
-        { code: 'pt', name: 'Português', flag: '🇵🇹', native: 'Português' },
-        { code: 'nl', name: 'Nederlands', flag: '🇳🇱', native: 'Nederlands' },
-        { code: 'pl', name: 'Polski', flag: '🇵🇱', native: 'Polski' },
-        { code: 'uk', name: 'Українська', flag: '🇺🇦', native: 'Українська' },
-        { code: 'zh', name: '中文', flag: '🇨🇳', native: '中文' },
-        { code: 'ja', name: '日本語', flag: '🇯🇵', native: '日本語' },
-        { code: 'ko', name: '한국어', flag: '🇰🇷', native: '한국어' },
-        { code: 'ar', name: 'العربية', flag: '🇸🇦', native: 'العربية' },
-        { code: 'hi', name: 'हिन्दी', flag: '🇮🇳', native: 'हिन्दी' },
-        { code: 'tr', name: 'Türkçe', flag: '🇹🇷', native: 'Türkçe' },
-        { code: 'vi', name: 'Tiếng Việt', flag: '🇻🇳', native: 'Tiếng Việt' },
-        { code: 'th', name: 'ไทย', flag: '🇹🇭', native: 'ไทย' },
-        { code: 'id', name: 'Bahasa Indonesia', flag: '🇮🇩', native: 'Bahasa Indonesia' }
-    ];
+    document.getElementById('chatName').textContent = chat.name;
+    document.getElementById('chatAvatar').src = chat.avatar;
+    document.getElementById('chatStatusText').textContent = chat.status === 'online' ? 'онлайн' : 'офлайн';
     
-    container.innerHTML = languages.map(lang => `
-        <div class="language-item" data-lang="${lang.code}">
-            <span class="language-flag">${lang.flag}</span>
-            <span class="language-name">${lang.native}</span>
-            <span class="language-code">${lang.code.toUpperCase()}</span>
-        </div>
-    `).join('');
-    
-    document.querySelectorAll('.language-item').forEach(item => {
-        item.addEventListener('click', () => {
-            const langCode = item.getAttribute('data-lang');
-            applyLanguage(langCode);
-            document.getElementById('languageModal')?.classList.remove('open');
-            showNotification(`Язык изменен на ${item.querySelector('.language-name').textContent}`, 'success');
-        });
+    document.querySelectorAll('.chat-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.getAttribute('data-chat-id') === chatId) item.classList.add('active');
     });
+    
+    loadMessages(chatId);
+    
+    if (window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('open');
 }
 
-// ========== ОСНОВНЫЕ ФУНКЦИИ ЧАТА ==========
-function sendMessage() {
-    const input = document.getElementById('messageInput');
-    const text = input.value.trim();
-    
-    if (!text || !currentChatId) return;
-    
-    const messageData = {
-        type: 'new_message',
-        chatId: currentChatId,
-        text: text,
-        senderId: currentUserId,
-        senderName: currentUsername,
-        isVoice: false,
-        isSticker: false,
-        isGif: false,
-        isPoll: false
-    };
-    
-    ws.send(JSON.stringify(messageData));
-    
-    // Оптимистичное обновление
-    addTempMessage(text);
-    
-    input.value = '';
-    input.style.height = 'auto';
-    
-    // Анимация отправки
-    const sendBtn = document.getElementById('sendBtn');
-    sendBtn.style.transform = 'scale(0.9)';
-    setTimeout(() => sendBtn.style.transform = '', 150);
-    
-    // Проверка достижений
-    checkMessageAchievements();
+function loadMessages(chatId) {
+    const msgs = messagesCache.get(chatId) || testMessages[chatId] || [];
+    messagesCache.set(chatId, msgs);
+    renderMessages();
 }
 
-function addTempMessage(text) {
-    const tempMessage = {
-        id: 'temp_' + Date.now(),
-        text: text,
-        senderId: currentUserId,
-        senderName: currentUsername,
-        timestamp: new Date().toISOString(),
-        status: 'sent',
-        reactions: [],
-        isVoice: false,
-        isSticker: false
-    };
-    
-    if (!messagesCache.has(currentChatId)) {
-        messagesCache.set(currentChatId, []);
-    }
-    messagesCache.get(currentChatId).push(tempMessage);
-    renderMessages(currentChatId);
-}
-
-function renderMessages(chatId) {
-    const messages = messagesCache.get(chatId) || [];
+function renderMessages() {
+    const msgs = messagesCache.get(currentChatId) || [];
     const container = document.getElementById('messagesArea');
     
-    if (!container) return;
-    
-    if (messages.length === 0) {
+    if (msgs.length === 0) {
         container.innerHTML = `
-            <div class="welcome-message cosmic-welcome">
-                <div class="welcome-icon animate__animated animate__pulse animate__infinite">
-                    <i class="fas fa-comet"></i>
-                </div>
-                <h3>✨ Добро пожаловать в Nexora ✨</h3>
-                <p>Начните общение прямо сейчас!</p>
-                <div class="quick-actions">
-                    <button onclick="sendQuickMessage('Привет! 👋')" class="quick-btn">👋 Привет</button>
-                    <button onclick="sendQuickMessage('Как дела? 😊')" class="quick-btn">😊 Как дела?</button>
-                    <button onclick="sendQuickMessage('Отлично выглядишь! 🔥')" class="quick-btn">🔥 Комплимент</button>
-                    <button onclick="sendStickerPack('happy')" class="quick-btn">🎨 Стикеры</button>
-                </div>
+            <div style="text-align: center; padding: 60px; color: var(--text-secondary);">
+                <i class="fas fa-comment-dots" style="font-size: 64px; margin-bottom: 20px;"></i>
+                <h3>✨ Начните общение ✨</h3>
+                <p>Напишите первое сообщение</p>
             </div>
         `;
         return;
     }
     
-    container.innerHTML = messages.map(msg => createMessageElement(msg, chatId)).join('');
+    container.innerHTML = msgs.map(msg => createMessageElement(msg)).join('');
     scrollToBottom();
 }
 
-function createMessageElement(message, chatId) {
-    const isOwn = message.senderId === currentUserId;
-    const isAI = message.isAI;
+function createMessageElement(msg) {
+    const isOwn = msg.senderId === currentUser.id;
+    let content = '';
     
-    let contentHtml = '';
-    
-    if (message.isSticker) {
-        contentHtml = `<div class="message-sticker">${message.text}</div>`;
-    } else if (message.isGif) {
-        contentHtml = `<img src="${message.gifUrl}" class="message-gif" onclick="viewGif('${message.gifUrl}')">`;
-    } else if (message.isPoll) {
-        contentHtml = createPollHTML(message);
-    } else if (message.isVoice) {
-        contentHtml = `
-            <div class="message-voice">
-                <button class="voice-play-btn" onclick="playVoice('${message.voiceUrl}')">
-                    <i class="fas fa-play"></i>
-                </button>
-                <div class="voice-wave">
-                    ${Array(10).fill().map(() => '<div class="wave-bar"></div>').join('')}
-                </div>
-                <span>0:${Math.floor(Math.random() * 30)}</span>
-            </div>
-        `;
+    if (msg.isSticker) {
+        content = `<div class="message-sticker">${msg.text}</div>`;
+    } else if (msg.isGif) {
+        content = `<img src="${msg.gifUrl}" class="message-gif" onclick="viewGif('${msg.gifUrl}')">`;
+    } else if (msg.isPoll) {
+        content = createPollHTML(msg);
     } else {
-        contentHtml = `<div class="message-text">${escapeHtml(message.text)}</div>`;
+        content = `<div class="message-text">${escapeHtml(msg.text)}</div>`;
     }
     
-    // Реакции
-    let reactionsHtml = '';
-    if (message.reactions && message.reactions.length > 0) {
-        reactionsHtml = '<div class="message-reactions">';
-        message.reactions.forEach(r => {
-            reactionsHtml += `
-                <div class="reaction" onclick="addReaction('${message.id}', '${r.emoji}')">
-                    ${r.emoji}
-                    ${r.users.length > 1 ? `<span class="reaction-count">${r.users.length}</span>` : ''}
-                </div>
-            `;
-        });
-        reactionsHtml += '</div>';
-    }
-    
-    // Статус
-    let statusHtml = '';
-    if (isOwn) {
-        const statusIcons = { sent: '✓', delivered: '✓✓', read: '✓✓' };
-        const statusColor = message.status === 'read' ? '#10b981' : '#8b8b9b';
-        statusHtml = `<span style="color: ${statusColor}">${statusIcons[message.status] || '✓'}</span>`;
-    }
-    
-    // Классы для AI сообщений
-    const aiClass = isAI ? 'ai-message' : '';
+    const reactionsHtml = msg.reactions && msg.reactions.length ? 
+        `<div class="message-reactions">${msg.reactions.map(r => `<span class="reaction" onclick="addReaction('${msg.id}', '${r}')">${r}</span>`).join('')}</div>` : '';
     
     return `
-        <div class="message ${isOwn ? 'message-own' : 'message-other'} ${aiClass}" data-message-id="${message.id}">
+        <div class="message ${isOwn ? 'message-own' : 'message-other'}">
             <div class="message-bubble">
-                ${!isOwn && message.senderName ? `<div class="message-sender">${escapeHtml(message.senderName)}</div>` : ''}
-                ${contentHtml}
-                <div class="message-time">
-                    <span>${formatTime(message.timestamp)}</span>
-                    ${message.edited ? '<span class="edited">(ред.)</span>' : ''}
-                    ${message.isForwarded ? '<span class="forwarded">↗️ Переслано</span>' : ''}
-                    <span class="message-status">${statusHtml}</span>
-                </div>
+                ${!isOwn ? `<div style="font-size: 12px; font-weight: 600;">${escapeHtml(msg.senderName)}</div>` : ''}
+                ${content}
+                <div class="message-time">${formatTime(msg.time)}</div>
                 ${reactionsHtml}
-                <div class="message-menu">
-                    <button class="message-menu-btn" onclick="showMessageMenu('${message.id}', '${chatId}')">
-                        <i class="fas fa-ellipsis-v"></i>
-                    </button>
-                </div>
             </div>
         </div>
     `;
 }
 
-function createPollHTML(message) {
-    const poll = message.pollData;
-    const totalVotes = poll.totalVotes || 0;
+function sendMessage() {
+    const input = document.getElementById('messageInput');
+    const text = input.value.trim();
+    if (!text || !currentChatId) return;
     
-    return `
-        <div class="message-poll">
-            <div class="poll-question">📊 ${escapeHtml(poll.question)}</div>
-            ${poll.options.map((opt, idx) => {
-                const votes = poll.votes?.[idx]?.length || 0;
-                const percentage = totalVotes > 0 ? (votes / totalVotes * 100).toFixed(1) : 0;
-                return `
-                    <div class="poll-option" onclick="votePoll('${message.id}', ${idx})">
-                        <div class="poll-option-text">${escapeHtml(opt)}</div>
-                        <div class="poll-progress">
-                            <div class="poll-progress-fill" style="width: ${percentage}%"></div>
-                        </div>
-                        <div class="poll-stats">${votes} голосов (${percentage}%)</div>
-                    </div>
-                `;
-            }).join('')}
-            <div class="poll-total">Всего голосов: ${totalVotes}</div>
-        </div>
-    `;
-}
-
-// ========== РАСШИРЕННЫЕ ФУНКЦИИ ==========
-
-// Создание опроса
-function showPollModal() {
-    const modal = document.getElementById('pollModal');
-    modal.classList.add('open');
-    
-    // Очистка
-    document.getElementById('pollQuestion').value = '';
-    const optionsContainer = document.getElementById('pollOptions');
-    optionsContainer.innerHTML = `
-        <div class="poll-option">
-            <input type="text" placeholder="Вариант 1">
-            <button class="remove-option"><i class="fas fa-times"></i></button>
-        </div>
-        <div class="poll-option">
-            <input type="text" placeholder="Вариант 2">
-            <button class="remove-option"><i class="fas fa-times"></i></button>
-        </div>
-    `;
-    
-    // Добавление вариантов
-    document.getElementById('addPollOption').onclick = () => {
-        const optionDiv = document.createElement('div');
-        optionDiv.className = 'poll-option';
-        optionDiv.innerHTML = `
-            <input type="text" placeholder="Вариант ${optionsContainer.children.length + 1}">
-            <button class="remove-option"><i class="fas fa-times"></i></button>
-        `;
-        optionsContainer.appendChild(optionDiv);
-        attachRemoveOption(optionDiv);
+    const newMsg = {
+        id: 'msg_' + Date.now(),
+        text: text,
+        senderId: currentUser.id,
+        senderName: currentUser.name,
+        time: Date.now(),
+        own: true,
+        reactions: []
     };
     
-    attachRemoveOption();
-}
-
-function attachRemoveOption(container = null) {
-    const btns = document.querySelectorAll('.remove-option');
-    btns.forEach(btn => {
-        btn.onclick = () => btn.parentElement.remove();
-    });
-}
-
-function createPoll() {
-    const question = document.getElementById('pollQuestion').value.trim();
-    const options = Array.from(document.querySelectorAll('#pollOptions .poll-option input'))
-        .map(input => input.value.trim())
-        .filter(v => v);
+    if (!messagesCache.has(currentChatId)) messagesCache.set(currentChatId, []);
+    messagesCache.get(currentChatId).push(newMsg);
+    renderMessages();
+    input.value = '';
     
-    if (!question || options.length < 2) {
-        showNotification('Введите вопрос и минимум 2 варианта', 'warning');
-        return;
+    // Отправка через WebSocket
+    if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({
+            type: 'new_message',
+            chatId: currentChatId,
+            text: text,
+            senderId: currentUser.id,
+            senderName: currentUser.name
+        }));
     }
     
-    ws.send(JSON.stringify({
-        type: 'create_poll',
-        chatId: currentChatId,
-        question: question,
-        options: options,
-        senderId: currentUserId,
-        senderName: currentUsername
-    }));
+    // Отправка статуса печатания
+    sendTypingStatus(false);
+    updateUserStats('messages');
+    checkAchievements('messages');
     
-    document.getElementById('pollModal').classList.remove('open');
-    showNotification('Опрос создан!', 'success');
+    // Эмуляция ответа (для демо)
+    setTimeout(() => simulateReply(), 2000);
 }
 
-// GIF анимации
-function showGifModal() {
-    const modal = document.getElementById('gifModal');
-    modal.classList.add('open');
-    loadGifs('trending');
-}
-
-function loadGifs(category) {
-    const gifs = {
-        trending: [
-            'https://media.tenor.com/2GcJkqH5oEsAAAAC/welcome.gif',
-            'https://media.tenor.com/4KvHjRgHnZQAAAAC/hi-hello.gif',
-            'https://media.tenor.com/8Bmh5JzNxN4AAAAC/thank-you.gif'
-        ],
-        funny: [
-            'https://media.tenor.com/5B3hJzRgLmMAAAAC/funny-laugh.gif',
-            'https://media.tenor.com/9CvHkRgNnP4AAAAC/omg.gif'
-        ],
-        love: [
-            'https://media.tenor.com/2GcJkqH5oEsAAAAC/love.gif',
-            'https://media.tenor.com/4KvHjRgHnZQAAAAC/kiss.gif'
-        ]
+function simulateReply() {
+    const replies = ['👍', 'Понял!', 'Спасибо!', 'Отлично!', '😊', '🔥', 'Круто!', 'Договорились!'];
+    const randomReply = replies[Math.floor(Math.random() * replies.length)];
+    const chat = chatsCache.get(currentChatId);
+    
+    const replyMsg = {
+        id: 'msg_' + Date.now(),
+        text: randomReply,
+        senderId: 'user_reply',
+        senderName: chat?.name || 'Пользователь',
+        time: Date.now(),
+        own: false,
+        reactions: []
     };
     
-    const container = document.getElementById('gifResults');
-    const selectedGifs = gifs[category] || gifs.trending;
+    messagesCache.get(currentChatId).push(replyMsg);
+    renderMessages();
+}
+
+function sendTypingStatus(isTyping) {
+    if (ws && ws.readyState === WebSocket.OPEN && currentChatId) {
+        ws.send(JSON.stringify({
+            type: 'typing',
+            chatId: currentChatId,
+            userId: currentUser.id,
+            isTyping: isTyping
+        }));
+    }
+}
+
+function showTypingIndicator(show) {
+    const dots = document.getElementById('typingDots');
+    const text = document.getElementById('chatStatusText');
+    if (show) {
+        dots.style.display = 'inline-flex';
+        text.style.display = 'none';
+    } else {
+        dots.style.display = 'none';
+        text.style.display = 'inline';
+    }
+}
+
+function addReaction(messageId, emoji) {
+    const msgs = messagesCache.get(currentChatId);
+    const msg = msgs.find(m => m.id === messageId);
+    if (msg && !msg.reactions.includes(emoji)) {
+        msg.reactions.push(emoji);
+        renderMessages();
+        updateUserStats('reactions');
+        
+        if (ws && ws.readyState === WebSocket.OPEN) {
+            ws.send(JSON.stringify({
+                type: 'add_reaction',
+                chatId: currentChatId,
+                messageId: messageId,
+                               emoji: emoji,
+                userId: currentUser.id
+            }));
+        }
+    }
+}
+
+function updateMessageReaction(data) {
+    const msgs = messagesCache.get(data.chatId);
+    const msg = msgs?.find(m => m.id === data.messageId);
+    if (msg && !msg.reactions.includes(data.emoji)) {
+        msg.reactions.push(data.emoji);
+        if (currentChatId === data.chatId) renderMessages();
+    }
+}
+
+// ========== СТИКЕРЫ ==========
+function initStickerGrid() {
+    const grid = document.getElementById('stickerGrid');
+    if (!grid) return;
     
-    container.innerHTML = selectedGifs.map(gif => `
+    const allStickers = [...stickerPacks.happy, ...stickerPacks.funny, ...stickerPacks.love, ...stickerPacks.cool, ...stickerPacks.animals];
+    grid.innerHTML = allStickers.map(s => `<div class="sticker" onclick="sendSticker('${s}')">${s}</div>`).join('');
+}
+
+function sendSticker(sticker) {
+    if (!currentChatId) return;
+    
+    const newMsg = {
+        id: 'msg_' + Date.now(),
+        text: sticker,
+        senderId: currentUser.id,
+        senderName: currentUser.name,
+        time: Date.now(),
+        own: true,
+        reactions: [],
+        isSticker: true
+    };
+    
+    messagesCache.get(currentChatId).push(newMsg);
+    renderMessages();
+    updateUserStats('stickers');
+    closeModal('stickerModal');
+    checkAchievements('stickers');
+    
+    if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({
+            type: 'new_message',
+            chatId: currentChatId,
+            text: sticker,
+            senderId: currentUser.id,
+            senderName: currentUser.name,
+            isSticker: true
+        }));
+    }
+}
+
+// ========== GIF ==========
+function initGifGrid() {
+    const grid = document.getElementById('gifGrid');
+    if (!grid) return;
+    
+    const allGifs = [...gifLibrary.trending, ...gifLibrary.funny, ...gifLibrary.love];
+    grid.innerHTML = allGifs.map(gif => `
         <div class="gif-item" onclick="sendGif('${gif}')">
             <img src="${gif}" alt="GIF">
         </div>
@@ -744,164 +568,729 @@ function loadGifs(category) {
 }
 
 function sendGif(gifUrl) {
-    ws.send(JSON.stringify({
-        type: 'send_gif',
-        chatId: currentChatId,
-        gifUrl: gifUrl,
-        senderId: currentUserId,
-        senderName: currentUsername
-    }));
+    if (!currentChatId) return;
     
-    document.getElementById('gifModal').classList.remove('open');
-}
-
-// Стикер паки
-function showStickerModal() {
-    const modal = document.getElementById('stickerModal');
-    modal.classList.add('open');
-    loadStickers('all');
-}
-
-function loadStickers(category) {
-    const packs = window.stickerPacks;
-    let stickers = [];
+    const newMsg = {
+        id: 'msg_' + Date.now(),
+        text: 'GIF',
+        senderId: currentUser.id,
+        senderName: currentUser.name,
+        time: Date.now(),
+        own: true,
+        reactions: [],
+        isGif: true,
+        gifUrl: gifUrl
+    };
     
-    if (category === 'all') {
-        stickers = Object.values(packs).flat();
-    } else {
-        stickers = packs[category] || [];
+    messagesCache.get(currentChatId).push(newMsg);
+    renderMessages();
+    closeModal('gifModal');
+    
+    if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({
+            type: 'new_message',
+            chatId: currentChatId,
+            text: gifUrl,
+            senderId: currentUser.id,
+            senderName: currentUser.name,
+            isGif: true,
+            gifUrl: gifUrl
+        }));
     }
-    
-    const container = document.getElementById('stickerGrid');
-    container.innerHTML = stickers.map(s => `
-        <div class="sticker" onclick="sendSticker('${s}')">${s}</div>
-    `).join('');
 }
 
-function sendSticker(sticker) {
-    ws.send(JSON.stringify({
-        type: 'new_message',
-        chatId: currentChatId,
-        text: sticker,
-        senderId: currentUserId,
-        senderName: currentUsername,
-        isSticker: true
-    }));
-    
-    document.getElementById('stickerModal').classList.remove('open');
+function viewGif(url) {
+    window.open(url, '_blank');
 }
 
-function sendStickerPack(packId) {
-    ws.send(JSON.stringify({
-        type: 'send_sticker_pack',
-        chatId: currentChatId,
-        packId: packId,
-        senderId: currentUserId,
-        senderName: currentUsername
-    }));
-}
+// ========== ГОЛОСОВЫЕ СООБЩЕНИЯ ==========
+let mediaRecorder = null;
+let audioChunks = [];
+let isRecording = false;
 
-// Голосовые сообщения
-function startVoiceRecording() {
-    navigator.mediaDevices.getUserMedia({ audio: true })
-        .then(stream => {
-            mediaRecorder = new MediaRecorder(stream);
-            audioChunks = [];
-            recordingStartTime = Date.now();
-            
-            mediaRecorder.ondataavailable = (e) => audioChunks.push(e.data);
-            mediaRecorder.onstop = () => {
-                const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-                const audioUrl = URL.createObjectURL(audioBlob);
-                sendVoiceMessage(audioUrl);
-                stream.getTracks().forEach(t => t.stop());
-                hideRecordingPanel();
-            };
-            
-            mediaRecorder.start();
-            isRecording = true;
-            showRecordingPanel();
-            
-            // Таймер записи
-            recordingInterval = setInterval(() => {
-                const elapsed = Math.floor((Date.now() - recordingStartTime) / 1000);
-                const minutes = Math.floor(elapsed / 60);
-                const seconds = elapsed % 60;
-                document.getElementById('recordingTime').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-            }, 1000);
-        })
-        .catch(err => {
-            console.error('Ошибка микрофона:', err);
-            showNotification('Не удалось получить доступ к микрофону', 'error');
-        });
+async function startVoiceRecording() {
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        audioChunks = [];
+        
+        mediaRecorder.ondataavailable = (e) => audioChunks.push(e.data);
+        mediaRecorder.onstop = () => {
+            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+            const audioUrl = URL.createObjectURL(audioBlob);
+            sendVoiceMessage(audioUrl);
+            stream.getTracks().forEach(t => t.stop());
+            document.getElementById('voiceBtn').classList.remove('recording');
+        };
+        
+        mediaRecorder.start();
+        isRecording = true;
+        document.getElementById('voiceBtn').classList.add('recording');
+        showNotification('🎙️ Запись началась... Отпустите для отправки', 'info');
+        
+        // Авто-остановка через 60 секунд
+        setTimeout(() => {
+            if (isRecording) stopVoiceRecording();
+        }, 60000);
+    } catch (err) {
+        showNotification('❌ Не удалось получить доступ к микрофону', 'error');
+    }
 }
 
 function stopVoiceRecording() {
     if (mediaRecorder && isRecording) {
         mediaRecorder.stop();
         isRecording = false;
-        clearInterval(recordingInterval);
+        document.getElementById('voiceBtn').classList.remove('recording');
     }
 }
 
-function showRecordingPanel() {
-    const panel = document.getElementById('voiceRecordingPanel');
-    panel.style.display = 'block';
-}
-
-function hideRecordingPanel() {
-    const panel = document.getElementById('voiceRecordingPanel');
-    panel.style.display = 'none';
-}
-
 function sendVoiceMessage(audioUrl) {
-    ws.send(JSON.stringify({
-        type: 'new_message',
-        chatId: currentChatId,
+    if (!currentChatId) return;
+    
+    const newMsg = {
+        id: 'msg_' + Date.now(),
         text: audioUrl,
-        senderId: currentUserId,
-        senderName: currentUsername,
-        isVoice: true
-    }));
+        senderId: currentUser.id,
+        senderName: currentUser.name,
+        time: Date.now(),
+        own: true,
+        reactions: [],
+        isVoice: true,
+        voiceUrl: audioUrl
+    };
+    
+    messagesCache.get(currentChatId).push(newMsg);
+    renderMessages();
+    updateUserStats('voice');
+    checkAchievements('voice');
+    
+    if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({
+            type: 'new_message',
+            chatId: currentChatId,
+            text: audioUrl,
+            senderId: currentUser.id,
+            senderName: currentUser.name,
+            isVoice: true
+        }));
+    }
 }
 
-function playVoice(audioUrl) {
-    const audio = new Audio(audioUrl);
+function playVoiceMessage(url) {
+    const audio = new Audio(url);
     audio.play();
 }
 
+// ========== ОПРОСЫ ==========
+let pollOptions = ['', ''];
+
+function addPollOption() {
+    pollOptions.push('');
+    renderPollOptions();
+}
+
+function renderPollOptions() {
+    const container = document.getElementById('pollOptionsList');
+    container.innerHTML = pollOptions.map((opt, i) => `
+        <div class="poll-option-input">
+            <input type="text" placeholder="Вариант ${i + 1}" value="${opt}" data-index="${i}">
+            ${i > 1 ? `<button class="remove-opt" data-index="${i}"><i class="fas fa-times"></i></button>` : ''}
+        </div>
+    `).join('');
+    
+    document.querySelectorAll('.poll-option-input input').forEach(inp => {
+        inp.addEventListener('input', (e) => {
+            pollOptions[parseInt(e.target.dataset.index)] = e.target.value;
+        });
+    });
+    
+    document.querySelectorAll('.remove-opt').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const idx = parseInt(btn.dataset.index);
+            pollOptions.splice(idx, 1);
+            renderPollOptions();
+        });
+    });
+}
+
+function createPoll() {
+    const question = document.getElementById('pollQuestion').value.trim();
+    const options = pollOptions.filter(opt => opt.trim());
+    
+    if (!question || options.length < 2) {
+        showNotification('❌ Введите вопрос и минимум 2 варианта', 'warning');
+        return;
+    }
+    
+    const newMsg = {
+        id: 'msg_' + Date.now(),
+        text: question,
+        senderId: currentUser.id,
+        senderName: currentUser.name,
+        time: Date.now(),
+        own: true,
+        reactions: [],
+        isPoll: true,
+        pollData: {
+            question: question,
+            options: options,
+            votes: options.map(() => []),
+            totalVotes: 0
+        }
+    };
+    
+    messagesCache.get(currentChatId).push(newMsg);
+    renderMessages();
+    closeModal('pollModal');
+    pollOptions = ['', ''];
+    document.getElementById('pollQuestion').value = '';
+    showNotification('📊 Опрос создан!', 'success');
+}
+
+function createPollHTML(msg) {
+    const poll = msg.pollData;
+    const total = poll.totalVotes || 0;
+    
+    return `
+        <div class="message-poll">
+            <div class="poll-question">📊 ${escapeHtml(poll.question)}</div>
+            ${poll.options.map((opt, idx) => {
+                const votes = poll.votes[idx]?.length || 0;
+                const percent = total > 0 ? (votes / total * 100).toFixed(1) : 0;
+                return `
+                    <div class="poll-option" onclick="votePoll('${msg.id}', ${idx})">
+                        <div>${escapeHtml(opt)}</div>
+                        <div class="poll-progress"><div class="poll-progress-fill" style="width: ${percent}%"></div></div>
+                        <div class="poll-stats">${votes} голосов (${percent}%)</div>
+                    </div>
+                `;
+            }).join('')}
+            <div class="poll-stats">Всего голосов: ${total}</div>
+        </div>
+    `;
+}
+
+function votePoll(messageId, optionIndex) {
+    const msgs = messagesCache.get(currentChatId);
+    const msg = msgs.find(m => m.id === messageId);
+    
+    if (msg && msg.pollData) {
+        // Проверка, голосовал ли уже
+        const hasVoted = msg.pollData.options.some((_, i) => 
+            msg.pollData.votes[i]?.includes(currentUser.id)
+        );
+        
+        if (!hasVoted) {
+            if (!msg.pollData.votes[optionIndex]) msg.pollData.votes[optionIndex] = [];
+            msg.pollData.votes[optionIndex].push(currentUser.id);
+            msg.pollData.totalVotes = (msg.pollData.totalVotes || 0) + 1;
+            renderMessages();
+            showNotification('✅ Ваш голос учтен!', 'success');
+        } else {
+            showNotification('⚠️ Вы уже голосовали в этом опросе', 'warning');
+        }
+    }
+}
+
+// ========== ОТЛОЖЕННЫЕ СООБЩЕНИЯ ==========
+function showScheduleModal() {
+    const modalHtml = `
+        <div class="modal" id="scheduleModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>⏰ Отложить сообщение</h3>
+                    <button class="close-modal" onclick="closeModal('scheduleModal')">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <input type="datetime-local" id="scheduleDateTime" class="schedule-input">
+                    <textarea id="scheduleText" placeholder="Введите сообщение..." rows="3" class="schedule-input"></textarea>
+                    <div class="schedule-presets">
+                        <button onclick="setSchedulePreset(5)">Через 5 мин</button>
+                        <button onclick="setSchedulePreset(30)">Через 30 мин</button>
+                        <button onclick="setSchedulePreset(60)">Через 1 час</button>
+                        <button onclick="setSchedulePreset(1440)">Завтра</button>
+                    </div>
+                    <button onclick="scheduleMessage()" class="create-btn">Запланировать</button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    const existing = document.getElementById('scheduleModal');
+    if (existing) existing.remove();
+    
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    openModal('scheduleModal');
+}
+
+function setSchedulePreset(minutes) {
+    const date = new Date(Date.now() + minutes * 60000);
+    const formatted = date.toISOString().slice(0, 16);
+    document.getElementById('scheduleDateTime').value = formatted;
+}
+
+function scheduleMessage() {
+    const dateTime = document.getElementById('scheduleDateTime').value;
+    const text = document.getElementById('scheduleText').value.trim();
+    
+    if (!dateTime || !text) {
+        showNotification('❌ Заполните все поля', 'warning');
+        return;
+    }
+    
+    const scheduleTime = new Date(dateTime).getTime();
+    const now = Date.now();
+    
+    if (scheduleTime <= now) {
+        showNotification('⚠️ Укажите будущее время', 'warning');
+        return;
+    }
+    
+    showNotification(`📅 Сообщение запланировано на ${new Date(scheduleTime).toLocaleString()}`, 'success');
+    closeModal('scheduleModal');
+    
+    // Сохраняем в localStorage
+    const scheduled = JSON.parse(localStorage.getItem('scheduled_messages') || '[]');
+    scheduled.push({
+        id: Date.now(),
+        chatId: currentChatId,
+        text: text,
+        time: scheduleTime,
+        senderId: currentUser.id,
+        senderName: currentUser.name
+    });
+    localStorage.setItem('scheduled_messages', JSON.stringify(scheduled));
+    
+    // Проверка планировщика
+    checkScheduledMessages();
+}
+
+function checkScheduledMessages() {
+    const scheduled = JSON.parse(localStorage.getItem('scheduled_messages') || '[]');
+    const now = Date.now();
+    
+    scheduled.forEach((msg, idx) => {
+        if (msg.time <= now) {
+            // Отправляем сообщение
+            const newMsg = {
+                id: 'msg_' + Date.now(),
+                text: msg.text,
+                senderId: msg.senderId,
+                senderName: msg.senderName,
+                time: now,
+                own: true,
+                reactions: []
+            };
+            
+            if (!messagesCache.has(msg.chatId)) messagesCache.set(msg.chatId, []);
+            messagesCache.get(msg.chatId).push(newMsg);
+            
+            if (currentChatId === msg.chatId) renderMessages();
+            
+            // Удаляем отправленное
+            scheduled.splice(idx, 1);
+            localStorage.setItem('scheduled_messages', JSON.stringify(scheduled));
+        }
+    });
+}
+
+setInterval(checkScheduledMessages, 60000);
+
+// ========== AI АССИСТЕНТ ==========
+const aiResponses = {
+    greeting: ['Привет! 👋 Как я могу помочь?', 'Здравствуйте! 🌟 Чем могу быть полезен?', 'Рад видеть! 💫'],
+    help: ['Я могу: отвечать на вопросы, показывать погоду, время, шутить, давать советы', 'Спроси меня о погоде, времени, или просто поговори!'],
+    joke: ['Почему программисты не любят природу? Там слишком много багов! 😄', 'Сколько программистов нужно, чтобы заменить лампочку? Ни одного, это аппаратная проблема! 💡'],
+    weather: ['🌤️ Сегодня отличная погода для общения!', '☀️ Солнечно и тепло, самое время для чата!'],
+    time: [`🕐 Текущее время: ${new Date().toLocaleTimeString()}`, `📅 Сегодня: ${new Date().toLocaleDateString()}`]
+};
+
+function initAIAssistant() {
+    document.getElementById('sendAiBtn').addEventListener('click', sendAiMessage);
+    document.getElementById('aiInput').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendAiMessage();
+    });
+    document.getElementById('closeAiBtn').addEventListener('click', toggleAIPanel);
+}
+
+function toggleAIPanel() {
+    const panel = document.getElementById('aiPanel');
+    panel.style.display = panel.style.display === 'none' ? 'flex' : 'none';
+}
+
+function sendAiMessage() {
+    const input = document.getElementById('aiInput');
+    const question = input.value.trim();
+    if (!question) return;
+    
+    const messagesDiv = document.getElementById('aiMessages');
+    messagesDiv.innerHTML += `<div class="ai-message user-message">👤 ${escapeHtml(question)}</div>`;
+    input.value = '';
+    
+    setTimeout(() => {
+        let response = getAIResponse(question);
+        messagesDiv.innerHTML += `<div class="ai-message">🤖 ${response}</div>`;
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        
+        // Сохраняем историю
+        aiMessages.push({ question, response });
+    }, 500);
+}
+
+function getAIResponse(question) {
+    const q = question.toLowerCase();
+    
+    if (q.includes('привет') || q.includes('hello') || q.includes('hi')) {
+        return aiResponses.greeting[Math.floor(Math.random() * aiResponses.greeting.length)];
+    }
+    if (q.includes('помощь') || q.includes('help')) {
+        return aiResponses.help[Math.floor(Math.random() * aiResponses.help.length)];
+    }
+    if (q.includes('шутка') || q.includes('joke')) {
+        return aiResponses.joke[Math.floor(Math.random() * aiResponses.joke.length)];
+    }
+    if (q.includes('погода') || q.includes('weather')) {
+        return aiResponses.weather[Math.floor(Math.random() * aiResponses.weather.length)];
+    }
+    if (q.includes('время') || q.includes('time')) {
+        return aiResponses.time[Math.floor(Math.random() * aiResponses.time.length)];
+    }
+    if (q.includes('как дела')) {
+        return 'У меня всё отлично! Спасибо, что спросили! 😊 А у вас?';
+    }
+    if (q.includes('спасибо')) {
+        return 'Пожалуйста! Всегда рад помочь! 🌟';
+    }
+    if (q.includes('кто ты')) {
+        return 'Я AI ассистент Nexora! Могу помочь с вопросами, подсказать время или погоду, рассказать шутку. Чем могу помочь? 🤖';
+    }
+    
+    return `Интересный вопрос! Я ещё учусь, но обязательно найду ответ. Могу рассказать шутку или показать время/погоду. Спросите что-нибудь другое! 🌟`;
+}
+
+// ========== NFT ==========
+function initNFTGrid() {
+    const grid = document.getElementById('nftGrid');
+    if (!grid) return;
+    
+    userNFTs = nftCollection;
+    grid.innerHTML = userNFTs.map(nft => `
+        <div class="nft-card">
+            <img src="${nft.image}" alt="${nft.name}">
+            <div class="nft-info">
+                <div class="nft-name">${nft.name}</div>
+                <div class="nft-value">💰 ${nft.value} NXR</div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function checkNFTAchievement() {
+    if (userNFTs.length >= 3) {
+        unlockAchievement('nft_collector');
+    }
+}
+
+// ========== ДОСТИЖЕНИЯ ==========
+function initAchievements() {
+    const saved = localStorage.getItem('nexora_achievements');
+    if (saved) {
+        const savedAchievements = JSON.parse(saved);
+        achievementsList.forEach(ach => {
+            const savedAch = savedAchievements.find(a => a.id === ach.id);
+            if (savedAch) ach.unlocked = savedAch.unlocked;
+        });
+    }
+    renderAchievements();
+}
+
+function renderAchievements() {
+    const container = document.getElementById('achievementsList');
+    if (!container) return;
+    
+    const unlocked = achievementsList.filter(a => a.unlocked).length;
+    document.getElementById('statAchievements').textContent = unlocked;
+    
+    container.innerHTML = achievementsList.map(ach => `
+        <div class="achievement-card ${ach.unlocked ? 'unlocked' : 'locked'}">
+            <div class="achievement-icon">${ach.icon}</div>
+            <div class="achievement-name">${ach.name}</div>
+            <div class="achievement-desc">${ach.desc}</div>
+            ${!ach.unlocked ? `<div class="achievement-progress"><div class="achievement-progress-fill" style="width: 0%"></div></div>` : '<div class="achievement-unlocked">✅ Разблокировано</div>'}
+        </div>
+    `).join('');
+}
+
+function checkAchievements(type) {
+    let updated = false;
+    
+    achievementsList.forEach(ach => {
+        if (ach.unlocked) return;
+        
+        switch(ach.id) {
+            case 'first_msg':
+                if (userStats.messages >= 1) { ach.unlocked = true; updated = true; showAchievement(ach); }
+                break;
+            case 'msg_100':
+                if (userStats.messages >= 100) { ach.unlocked = true; updated = true; showAchievement(ach); }
+                break;
+            case 'sticker_lover':
+                if (userStats.stickers >= 50) { ach.unlocked = true; updated = true; showAchievement(ach); }
+                break;
+            case 'reaction_master':
+                if (userStats.reactions >= 50) { ach.unlocked = true; updated = true; showAchievement(ach); }
+                break;
+            case 'voice_master':
+                if (userStats.voice >= 10) { ach.unlocked = true; updated = true; showAchievement(ach); }
+                break;
+        }
+    });
+    
+    if (updated) {
+        localStorage.setItem('nexora_achievements', JSON.stringify(achievementsList));
+        renderAchievements();
+    }
+}
+
+function unlockAchievement(id) {
+    const ach = achievementsList.find(a => a.id === id);
+    if (ach && !ach.unlocked) {
+        ach.unlocked = true;
+        localStorage.setItem('nexora_achievements', JSON.stringify(achievementsList));
+        renderAchievements();
+        showAchievement(ach);
+    }
+}
+
+function showAchievement(ach) {
+    showNotification(`🏆 Достижение разблокировано: ${ach.name}! ${ach.icon}`, 'success');
+}
+
+// ========== СТАТИСТИКА ==========
+function updateUserStats(type) {
+    userStats[type] = (userStats[type] || 0) + 1;
+    localStorage.setItem('nexora_stats', JSON.stringify(userStats));
+    updateStats();
+}
+
+function updateStats() {
+    let totalMessages = 0;
+    messagesCache.forEach(msgs => { totalMessages += msgs.length; });
+    
+    document.getElementById('statMessages').textContent = totalMessages;
+    document.getElementById('statChats').textContent = chatsCache.size;
+    document.getElementById('statStreak').textContent = userStats.streak || 0;
+    
+    // Обновляем статистику в профиле
+    const statsContent = document.getElementById('statsContent');
+    if (statsContent) {
+        statsContent.innerHTML = `
+            <div class="stats-detail">
+                <div class="stat-card"><i class="fas fa-comment-dots"></i><span>${totalMessages}</span><small>сообщений</small></div>
+                <div class="stat-card"><i class="fas fa-smile"></i><span>${userStats.reactions || 0}</span><small>реакций</small></div>
+                <div class="stat-card"><i class="fas fa-sticker"></i><span>${userStats.stickers || 0}</span><small>стикеров</small></div>
+                <div class="stat-card"><i class="fas fa-microphone"></i><span>${userStats.voice || 0}</span><small>голосовых</small></div>
+                <div class="stat-card"><i class="fas fa-fire"></i><span>${userStats.streak || 0}</span><small>дней подряд</small></div>
+                <div class="stat-card"><i class="fas fa-clock"></i><span>${Math.floor(totalMessages / 10)}</span><small>часов в чате</small></div>
+            </div>
+        `;
+    }
+}
+
+function updateStatsAfterMessage() {
+    updateStats();
+    checkAchievements('messages');
+}
+
+function showStats() {
+    updateStats();
+    openModal('statsModal');
+}
+
+// ========== ЯЗЫКИ ==========
+function initLanguageGrid() {
+    const grid = document.getElementById('languageGrid');
+    if (!grid) return;
+    
+    grid.innerHTML = Object.entries(languages).map(([code, name]) => `
+        <div class="language-item" onclick="setLanguage('${code}')">
+            ${name}
+        </div>
+    `).join('');
+}
+
+function setLanguage(code) {
+    currentLanguage = code;
+    localStorage.setItem('nexora_language', code);
+    showNotification(`🌍 Язык изменен на ${languages[code]}`, 'success');
+    closeModal('languageModal');
+    
+    // Простые переводы интерфейса
+    const translations = {
+        ru: { online: 'онлайн', offline: 'офлайн', group: 'групповой чат', noMessages: 'Нет сообщений' },
+        en: { online: 'online', offline: 'offline', group: 'group chat', noMessages: 'No messages' },
+        es: { online: 'en línea', offline: 'desconectado', group: 'chat grupal', noMessages: 'No hay mensajes' }
+    };
+    
+    const t = translations[code] || translations.ru;
+    document.getElementById('chatStatusText').textContent = t.online;
+}
+
+// ========== ТЕМЫ ==========
+function loadTheme() {
+    const saved = localStorage.getItem('nexora_theme') || 'dark';
+    currentTheme = saved;
+    applyTheme(saved);
+}
+
+function toggleTheme() {
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    currentTheme = newTheme;
+    applyTheme(newTheme);
+    localStorage.setItem('nexora_theme', newTheme);
+    showNotification(`${newTheme === 'dark' ? '🌙 Темная' : '☀️ Светлая'} тема`, 'success');
+}
+
+function applyTheme(theme) {
+    if (theme === 'light') {
+        document.body.classList.add('light');
+    } else {
+        document.body.classList.remove('light');
+    }
+}
+
+// ========== ПРОФИЛЬ ==========
+function togglePanel(panelId) {
+    const panel = document.getElementById(panelId);
+    panel.classList.toggle('open');
+}
+
+function changeAvatar() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const newAvatar = event.target.result;
+                document.getElementById('userAvatar').src = newAvatar;
+                document.getElementById('profileAvatar').src = newAvatar;
+                currentUser.avatar = newAvatar;
+                showNotification('✅ Аватар обновлен!', 'success');
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+    input.click();
+}
+
+function insertEmoji() {
+    const input = document.getElementById('messageInput');
+    const emojis = ['😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇', '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚', '😋', '😛', '😝', '😜', '🤪', '🤨', '🧐', '🤓', '😎', '🤩', '🥳'];
+    const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+    input.value += randomEmoji;
+    input.focus();
+}
+
+function filterChats(filter) {
+    const items = document.querySelectorAll('.chat-item');
+    items.forEach(item => {
+        const chatId = item.getAttribute('data-chat-id');
+        const chat = chatsCache.get(chatId);
+        
+        if (filter === 'all') {
+            item.style.display = 'flex';
+        } else if (filter === 'unread') {
+            // Для демо показываем чаты с непрочитанными
+            item.style.display = 'flex';
+        } else if (filter === 'groups') {
+            item.style.display = chat?.type === 'group' ? 'flex' : 'none';
+        }
+    });
+}
+
+function updateUnreadCount(chatId) {
+    const item = document.querySelector(`.chat-item[data-chat-id="${chatId}"]`);
+    if (item) {
+        let badge = item.querySelector('.unread-badge');
+        if (!badge) {
+            badge = document.createElement('div');
+            badge.className = 'unread-badge';
+            item.appendChild(badge);
+        }
+        const current = parseInt(badge.textContent) || 0;
+        badge.textContent = current + 1;
+    }
+    
+    const totalUnread = document.querySelectorAll('.unread-badge').length;
+    document.getElementById('unreadCount').textContent = totalUnread;
+}
+
+function playNotificationSound() {
+    // Просто вибрация для мобильных
+    if (window.navigator && window.navigator.vibrate) {
+        window.navigator.vibrate(200);
+    }
+}
+
+// ========== МОБИЛЬНОЕ МЕНЮ ==========
+function initMobileMenu() {
+    const btn = document.getElementById('mobileMenuBtn');
+    if (btn) {
+        btn.addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('open');
+        });
+    }
+}
+
+// ========== МОДАЛЬНЫЕ ОКНА ==========
+function openModal(id) {
+    const modal = document.getElementById(id);
+    if (modal) modal.classList.add('open');
+}
+
+function closeModal(id) {
+    const modal = document.getElementById(id);
+    if (modal) modal.classList.remove('open');
+}
+
 // ========== УВЕДОМЛЕНИЯ ==========
+let notificationContainer = null;
+
+function createNotificationContainer() {
+    if (!notificationContainer) {
+        notificationContainer = document.createElement('div');
+        notificationContainer.style.cssText = 'position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;';
+        document.body.appendChild(notificationContainer);
+    }
+    return notificationContainer;
+}
+
 function showNotification(message, type = 'info') {
-    const container = document.getElementById('notificationContainer');
+    const container = createNotificationContainer();
     const toast = document.createElement('div');
-    toast.className = `notification-toast ${type}`;
+    toast.className = 'notification';
     
     const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+    const colors = { success: '#10b981', error: '#ef4444', warning: '#f59e0b', info: '#6366f1' };
     
-    toast.innerHTML = `
-        <span style="font-size: 20px;">${icons[type]}</span>
-        <span style="flex: 1;">${message}</span>
-        <button onclick="this.parentElement.remove()" style="background: none; border: none; cursor: pointer;">✖</button>
-    `;
+    toast.style.borderLeftColor = colors[type];
+    toast.innerHTML = `${icons[type]} ${message}`;
     
     container.appendChild(toast);
     
     setTimeout(() => {
-        toast.style.animation = 'slideOutRight 0.3s ease forwards';
+        toast.style.animation = 'slideOut 0.3s forwards';
         setTimeout(() => toast.remove(), 300);
     }, 3000);
 }
 
-function showAchievementNotification(achievement) {
-    showNotification(`🏆 Достижение разблокировано: ${achievement.name}! ${achievement.icon}`, 'success');
-}
-
-function showGiftNotification(gift) {
-    showNotification(`🎁 Вы получили подарок: ${gift.gift} от ${gift.from}!`, 'success');
-}
-
-// ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
+// ========== ВСПОМОГАТЕЛЬНЫЕ ==========
 function escapeHtml(text) {
+    if (!text) return '';
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
@@ -923,31 +1312,40 @@ function formatTime(timestamp) {
 function scrollToBottom() {
     const container = document.getElementById('messagesContainer');
     if (container) {
-        container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+        container.scrollTop = container.scrollHeight;
     }
 }
 
-// ========== ЗАПУСК ==========
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('🚀 Nexora Ultimate v4.0 запущен!');
-    console.log('✨ 50+ языков');
-    console.log('🎨 NFT коллекции');
-    console.log('💰 Крипто-кошелек');
-    console.log('🤖 AI ассистент');
-    console.log('🏆 Система достижений');
-    console.log('🎭 Реакции и стикеры');
-    console.log('📊 Голосовые сообщения');
-    console.log('🎬 GIF анимации');
-    console.log('📝 Опросы');
-    console.log('📍 Закрепленные сообщения');
-    console.log('🔄 Пересылка сообщений');
-    console.log('⏰ Отложенные сообщения');
-    console.log('🔐 Секретные чаты');
-    console.log('📢 Каналы');
-    console.log('👥 Группы');
-    console.log('🤖 Боты');
-    console.log('🎁 Подарки');
-    console.log('🌙 Космическая тема');
-    
-    initWebSocket();
+// Инициализация кошелька
+document.getElementById('receiveNXR')?.addEventListener('click', () => {
+    const address = '0x' + Math.random().toString(36).substr(2, 40);
+    document.getElementById('walletAddress').innerHTML = `${address}<button id="copyAddress"><i class="fas fa-copy"></i></button>`;
+    showNotification('💰 Адрес скопирован', 'success');
 });
+
+document.getElementById('sendNXR')?.addEventListener('click', () => {
+    const amount = prompt('Введите сумму NXR для отправки:');
+    if (amount && !isNaN(amount) && amount > 0 && amount <= walletBalance) {
+        walletBalance -= amount;
+        document.getElementById('walletBalance').textContent = walletBalance + ' NXR';
+        document.getElementById('walletBalanceLarge').textContent = walletBalance;
+        showNotification(`✅ Отправлено ${amount} NXR`, 'success');
+    } else {
+        showNotification('❌ Недостаточно средств', 'error');
+    }
+});
+
+// Загрузка сохраненных данных
+const savedStats = localStorage.getItem('nexora_stats');
+if (savedStats) userStats = JSON.parse(savedStats);
+
+const savedWallet = localStorage.getItem('nexora_wallet');
+if (savedWallet) walletBalance = parseInt(savedWallet);
+
+setInterval(() => {
+    localStorage.setItem('nexora_stats', JSON.stringify(userStats));
+    localStorage.setItem('nexora_wallet', walletBalance);
+}, 5000);
+
+console.log('🚀 Nexora Ultimate полностью загружен!');
+console.log('✨ 50+ языков | 🎨 NFT | 🤖 AI | 🎬 GIF | 📊 Опросы | 🏆 Достижения | 💰 Кошелек');
