@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:6
+    restart: always
+    volumes:
+      - mongo_data:/data/db
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: secret
+    networks:
+      - nexora-network
+
+  redis:
+    image: redis:7-alpine
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - nexora-network
+
+  server:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.server
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - MONGODB_URI=mongodb://admin:secret@mongodb:27017/nexora?authSource=admin
+      - REDIS_URL=redis://redis:6379
+    env_file:
+      - .env
+    depends_on:
+      - mongodb
+      - redis
+    networks:
+      - nexora-network
+
+  client:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.client
+    restart: always
+    ports:
+      - "3000:80"
+    depends_on:
+      - server
+    networks:
+      - nexora-network
+
+  admin:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.admin
+    restart: always
+    ports:
+      - "3001:80"
+    depends_on:
+      - server
+    networks:
+      - nexora-network
+
+networks:
+  nexora-network:
+    driver: bridge
+
+volumes:
+  mongo_data:
