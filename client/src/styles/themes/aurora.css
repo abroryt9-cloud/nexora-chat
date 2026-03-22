@@ -1,0 +1,8 @@
+[data-theme="aurora"] {
+  --bg-primary: #0b2b44;
+  --bg-secondary: #1c4e6f;
+  --text-primary: #eef4ff;
+  --text-secondary: #cbd5e6;
+  --border-color: #2c6e9e;
+  background: linear-gradient(135deg, #0b2b44, #1c4e6f, #2c6e9e);
+}
