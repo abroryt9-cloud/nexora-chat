@@ -1,0 +1,8 @@
+[data-theme="cosmic"] {
+  --bg-primary: #0f0c29;
+  --bg-secondary: #302b63;
+  --text-primary: #e0e0ff;
+  --text-secondary: #b0b0ff;
+  --border-color: #4c3b6e;
+  background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+}
