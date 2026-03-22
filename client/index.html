@@ -4,337 +4,569 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#6366f1">
-    <title>Nexora - Современный мессенджер</title>
+    <meta name="description" content="Nexora Ultimate - самый продвинутый мессенджер с AI, NFT, крипто-кошельком и 50+ языками">
+    <title>Nexora Ultimate - Мессенджер Будущего</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 </head>
 <body>
-    <!-- ЭКРАН ЗАГРУЗКИ -->
+    <!-- КОСМИЧЕСКАЯ ЗАГРУЗКА -->
     <div class="splash-screen" id="splashScreen">
+        <canvas id="starCanvas"></canvas>
+        <canvas id="nebulaCanvas"></canvas>
         <div class="splash-content">
             <div class="splash-logo">
-                <div class="logo-icon">
-                    <i class="fas fa-comment-dots"></i>
+                <div class="logo-3d-container">
+                    <div class="logo-3d">
+                        <div class="logo-face front"><i class="fas fa-comment-dots"></i></div>
+                        <div class="logo-face back"><i class="fas fa-star"></i></div>
+                        <div class="logo-face left"><i class="fas fa-heart"></i></div>
+                        <div class="logo-face right"><i class="fas fa-crown"></i></div>
+                        <div class="logo-face top"><i class="fas fa-rocket"></i></div>
+                        <div class="logo-face bottom"><i class="fas fa-gem"></i></div>
+                    </div>
                 </div>
-                <h1>Nexora</h1>
+                <h1 class="gradient-text animate__animated animate__pulse animate__infinite">Nexora</h1>
+                <div class="typing-container">
+                    <span id="typingWords"></span>
+                    <span class="cursor">|</span>
+                </div>
             </div>
             <div class="splash-loader">
-                <div class="loader-bar"></div>
-                <div class="loader-bar"></div>
-                <div class="loader-bar"></div>
+                <div class="loader-ring"></div>
+                <div class="loader-ring"></div>
+                <div class="loader-ring"></div>
+                <div class="loader-ring"></div>
             </div>
-            <p class="splash-text">Загрузка мессенджера...</p>
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="progressFill"></div>
+                <div class="progress-glow"></div>
+            </div>
+            <p class="splash-text" id="splashText">Загрузка квантовых модулей...</p>
+            <div class="version-info">v4.0.0 | 50+ языков | AI Assistant</div>
         </div>
     </div>
 
-    <!-- ЭКРАН АВТОРИЗАЦИИ -->
+    <!-- КОСМИЧЕСКАЯ АВТОРИЗАЦИЯ -->
     <div class="auth-screen" id="authScreen" style="display: none;">
+        <div class="cosmic-bg"></div>
         <div class="auth-container">
-            <div class="auth-card">
+            <div class="auth-card cosmic-glass">
                 <div class="auth-header">
-                    <div class="auth-logo">
+                    <div class="auth-logo floating">
                         <i class="fas fa-comment-dots"></i>
+                        <div class="logo-rings"></div>
                     </div>
-                    <h1>Nexora</h1>
-                    <p>Современный способ общения</p>
+                    <h1 class="gradient-text">Nexora</h1>
+                    <p>Мессенджер будущего</p>
                 </div>
                 
                 <div class="auth-tabs">
-                    <button class="auth-tab active" data-tab="login">Вход</button>
-                    <button class="auth-tab" data-tab="register">Регистрация</button>
+                    <button class="auth-tab active" data-tab="login">
+                        <i class="fas fa-sign-in-alt"></i> <span>Вход</span>
+                    </button>
+                    <button class="auth-tab" data-tab="register">
+                        <i class="fas fa-user-plus"></i> <span>Регистрация</span>
+                    </button>
                 </div>
                 
-                <!-- Форма входа -->
                 <form id="loginForm" class="auth-form active">
-                    <div class="input-group">
+                    <div class="input-group cosmic-input">
                         <i class="fas fa-envelope"></i>
-                        <input type="email" placeholder="Email" id="loginEmail" required>
+                        <input type="email" id="loginEmail" required>
+                        <label>Email</label>
+                        <div class="input-glow"></div>
                     </div>
-                    <div class="input-group">
+                    <div class="input-group cosmic-input">
                         <i class="fas fa-lock"></i>
-                        <input type="password" placeholder="Пароль" id="loginPassword" required>
+                        <input type="password" id="loginPassword" required>
+                        <label>Пароль</label>
+                        <div class="input-glow"></div>
                     </div>
-                    <button type="submit" class="auth-btn">Войти</button>
+                    <div class="auth-options">
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="rememberMe">
+                            <span class="checkmark"></span>
+                            Запомнить меня
+                        </label>
+                        <a href="#" id="forgotPassword" class="forgot-link">Забыли пароль?</a>
+                    </div>
+                    <button type="submit" class="auth-btn cosmic-btn">
+                        <span>Войти в систему</span>
+                        <i class="fas fa-arrow-right"></i>
+                        <div class="btn-glow"></div>
+                    </button>
                     <div class="demo-accounts">
-                        <p>Демо-аккаунты:</p>
+                        <p>✨ Быстрый вход ✨</p>
                         <div class="demo-buttons">
-                            <button type="button" class="demo-btn" data-email="alex@example.com">Алексей</button>
-                            <button type="button" class="demo-btn" data-email="maria@example.com">Мария</button>
-                            <button type="button" class="demo-btn" data-email="dmitry@example.com">Дмитрий</button>
+                            <button class="demo-btn" data-email="alex@example.com" style="background: linear-gradient(135deg, #667eea, #764ba2)">
+                                <i class="fas fa-code"></i> Алексей
+                            </button>
+                            <button class="demo-btn" data-email="maria@example.com" style="background: linear-gradient(135deg, #f093fb, #f5576c)">
+                                <i class="fas fa-palette"></i> Мария
+                            </button>
+                            <button class="demo-btn" data-email="dmitry@example.com" style="background: linear-gradient(135deg, #4facfe, #00f2fe)">
+                                <i class="fas fa-chart-line"></i> Дмитрий
+                            </button>
                         </div>
                     </div>
                 </form>
                 
-                <!-- Форма регистрации -->
                 <form id="registerForm" class="auth-form">
-                    <div class="input-group">
-                        <i class="fas fa-user"></i>
-                        <input type="text" placeholder="Имя пользователя" id="regUsername" required>
+                    <div class="input-group cosmic-input">
+                        <i class="fas fa-user-astronaut"></i>
+                        <input type="text" id="regUsername" required>
+                        <label>Имя пользователя</label>
+                        <div class="input-glow"></div>
                     </div>
-                    <div class="input-group">
+                    <div class="input-group cosmic-input">
                         <i class="fas fa-envelope"></i>
-                        <input type="email" placeholder="Email" id="regEmail" required>
+                        <input type="email" id="regEmail" required>
+                        <label>Email</label>
+                        <div class="input-glow"></div>
                     </div>
-                    <div class="input-group">
+                    <div class="input-group cosmic-input">
                         <i class="fas fa-lock"></i>
-                        <input type="password" placeholder="Пароль" id="regPassword" required>
+                        <input type="password" id="regPassword" required>
+                        <label>Пароль</label>
+                        <div class="input-glow"></div>
                     </div>
                     <div class="avatar-selector">
-                        <p>Выберите аватар:</p>
-                        <div class="avatar-options" id="avatarOptions">
-                            <div class="avatar-option" data-avatar="1">
-                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=1">
-                            </div>
-                            <div class="avatar-option" data-avatar="2">
-                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=2">
-                            </div>
-                            <div class="avatar-option" data-avatar="3">
-                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=3">
-                            </div>
-                            <div class="avatar-option" data-avatar="4">
-                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=4">
-                            </div>
-                        </div>
+                        <p>✨ Выбери свой космический стиль ✨</p>
+                        <div class="avatar-options" id="avatarOptions"></div>
+                    </div>
+                    <div class="language-selector">
+                        <p>🌍 Выбери язык</p>
+                        <div class="language-grid" id="languageGrid"></div>
                     </div>
                     <div class="terms-checkbox">
-                        <input type="checkbox" id="termsAgree" required>
-                        <label for="termsAgree">Я согласен с <a href="#" id="termsLink">условиями использования</a> и <a href="#" id="privacyLink">политикой конфиденциальности</a></label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="termsAgree">
+                            <span class="checkmark"></span>
+                            Я согласен с <a href="#" id="termsLink">условиями</a> и <a href="#" id="privacyLink">политикой</a>
+                        </label>
                     </div>
-                    <button type="submit" class="auth-btn">Создать аккаунт</button>
+                    <button type="submit" class="auth-btn cosmic-btn">
+                        <span>Создать аккаунт</span>
+                        <i class="fas fa-sparkles"></i>
+                        <div class="btn-glow"></div>
+                    </button>
                 </form>
+                
+                <div class="social-auth">
+                    <div class="divider"><span>Или войти через</span></div>
+                    <div class="social-buttons">
+                        <button class="social-btn google"><i class="fab fa-google"></i></button>
+                        <button class="social-btn github"><i class="fab fa-github"></i></button>
+                        <button class="social-btn telegram"><i class="fab fa-telegram"></i></button>
+                        <button class="social-btn discord"><i class="fab fa-discord"></i></button>
+                                            </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- МОДАЛЬНОЕ ОКНО УСЛОВИЙ -->
-    <div class="modal" id="termsModal">
-        <div class="modal-content modal-large">
-            <div class="modal-header">
-                <h3>Условия использования Nexora</h3>
-                <button class="close-modal">&times;</button>
-            </div>
-            <div class="modal-body terms-content">
-                <h4>1. Общие положения</h4>
-                <p>Nexora - это современный мессенджер, предоставляющий возможность обмена сообщениями, медиафайлами и голосовыми сообщениями. Используя сервис, вы соглашаетесь с данными условиями.</p>
-                
-                <h4>2. Конфиденциальность</h4>
-                <p>Мы уважаем вашу конфиденциальность. Все сообщения шифруются и хранятся только на вашем устройстве. Мы не передаем данные третьим лицам.</p>
-                
-                <h4>3. Правила поведения</h4>
-                <p>Запрещается: спам, оскорбления, распространение запрещенного контента, нарушение авторских прав, мошенничество.</p>
-                
-                <h4>4. Ответственность</h4>
-                <p>Пользователь несет ответственность за все действия, совершенные в аккаунте. Администрация не несет ответственности за содержание сообщений.</p>
-                
-                <h4>5. Изменения условий</h4>
-                <p>Мы оставляем право изменять условия использования. О важных изменениях мы уведомим вас по email.</p>
-                
-                <h4>6. Контакты</h4>
-                <p>По вопросам: support@nexora.com</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- МОДАЛЬНОЕ ОКНО ПОЛИТИКИ -->
-    <div class="modal" id="privacyModal">
-        <div class="modal-content modal-large">
-            <div class="modal-header">
-                <h3>Политика конфиденциальности</h3>
-                <button class="close-modal">&times;</button>
-            </div>
-            <div class="modal-body terms-content">
-                <h4>Какие данные мы собираем?</h4>
-                <p>• Имя пользователя и email<br>• Аватар (по вашему выбору)<br>• История сообщений (только на вашем устройстве)<br>• Технические данные (IP, браузер)</p>
-                
-                <h4>Как мы используем данные?</h4>
-                <p>• Для обеспечения работы мессенджера<br>• Для улучшения сервиса<br>• Для связи с вами по важным вопросам</p>
-                
-                <h4>Безопасность</h4>
-                <p>Мы используем современные методы шифрования для защиты ваших данных. Ваши сообщения доступны только вам и вашим собеседникам.</p>
-                
-                <h4>Ваши права</h4>
-                <p>Вы можете удалить свой аккаунт и все связанные с ним данные в любой момент.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- ОСНОВНОЙ ИНТЕРФЕЙС -->
+    <!-- ОСНОВНОЙ ИНТЕРФЕЙС С НЕВЕРОЯТНЫМ ДИЗАЙНОМ -->
     <div class="app-container" id="appContainer" style="display: none;">
-        <!-- Боковая панель -->
-        <aside class="sidebar">
+        <!-- Боковая панель с эффектом стекла -->
+        <aside class="sidebar cosmic-glass">
             <div class="sidebar-header">
                 <div class="user-profile" id="userProfileBtn">
                     <div class="avatar-container">
                         <img src="" alt="Profile" class="avatar" id="userAvatar">
-                        <div class="online-indicator"></div>
+                        <div class="online-indicator cosmic-pulse"></div>
+                        <div class="avatar-ring"></div>
+                        <div class="avatar-glow"></div>
                     </div>
                     <div class="user-info">
                         <h3 id="userName">Загрузка...</h3>
-                        <p id="userStatus">онлайн</p>
+                        <div class="status-badge">
+                            <span class="status-dot"></span>
+                            <span id="userStatus">онлайн</span>
+                        </div>
                     </div>
-                    <button class="settings-btn">
-                        <i class="fas fa-cog"></i>
-                    </button>
+                    <div class="user-actions">
+                        <button class="icon-btn" id="settingsBtn">
+                            <i class="fas fa-cog"></i>
+                            <div class="btn-tooltip">Настройки</div>
+                        </button>
+                        <button class="icon-btn" id="languageBtn">
+                            <i class="fas fa-globe"></i>
+                            <div class="btn-tooltip">Язык</div>
+                        </button>
+                    </div>
                 </div>
                 <div class="search-bar">
                     <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Поиск чатов или сообщений..." id="searchInput">
+                    <input type="text" placeholder="Поиск чатов, сообщений, файлов..." id="searchInput">
+                    <button class="voice-search" id="voiceSearchBtn">
+                        <i class="fas fa-microphone"></i>
+                        <div class="voice-wave"></div>
+                    </button>
+                    <button class="qr-search" id="qrScanBtn">
+                        <i class="fas fa-qrcode"></i>
+                    </button>
                 </div>
+            </div>
+            
+            <!-- Папки чатов -->
+            <div class="chat-folders" id="chatFolders">
+                <button class="folder-btn active" data-folder="all">
+                    <i class="fas fa-inbox"></i>
+                    <span>Все</span>
+                </button>
+                <button class="folder-btn" data-folder="unread">
+                    <i class="fas fa-envelope"></i>
+                    <span>Непрочитанные</span>
+                    <span class="folder-count" id="unreadCount">0</span>
+                </button>
+                <button class="folder-btn" data-folder="groups">
+                    <i class="fas fa-users"></i>
+                    <span>Группы</span>
+                </button>
+                <button class="folder-btn" data-folder="channels">
+                    <i class="fas fa-broadcast-tower"></i>
+                    <span>Каналы</span>
+                </button>
+                <button class="folder-btn" data-folder="bots">
+                    <i class="fas fa-robot"></i>
+                    <span>Боты</span>
+                </button>
+                <button class="folder-btn add-folder" id="addFolderBtn">
+                    <i class="fas fa-plus"></i>
+                </button>
             </div>
             
             <div class="chats-list" id="chatsList">
                 <div class="loading-chats">
-                    <div class="spinner"></div>
-                    <p>Загрузка чатов...</p>
+                    <div class="cosmic-spinner"></div>
+                    <p>Загрузка галактики чатов...</p>
                 </div>
             </div>
             
-            <button class="create-chat-fab" id="createChatFab">
-                <i class="fas fa-plus"></i>
-            </button>
+            <div class="sidebar-footer">
+                <button class="footer-btn" id="createChatFab">
+                    <i class="fas fa-plus"></i>
+                    <span>Новый чат</span>
+                </button>
+                <button class="footer-btn" id="createChannelBtn">
+                    <i class="fas fa-broadcast-tower"></i>
+                    <span>Канал</span>
+                </button>
+                <button class="footer-btn" id="createGroupBtn">
+                    <i class="fas fa-users"></i>
+                    <span>Группа</span>
+                </button>
+            </div>
         </aside>
         
-        <!-- Основная область чата -->
+        <!-- Основная область чата с эффектом параллакса -->
         <main class="chat-area">
-            <div class="chat-header" id="chatHeader">
+            <div class="chat-header cosmic-glass">
                 <div class="chat-info">
                     <button class="mobile-menu-btn" id="mobileMenuBtn">
                         <i class="fas fa-bars"></i>
                     </button>
                     <div class="chat-avatar">
                         <img src="" alt="Chat" id="chatAvatar">
+                        <div class="chat-status-dot"></div>
+                        <div class="chat-avatar-glow"></div>
                     </div>
                     <div class="chat-details">
                         <h2 id="chatName">Выберите чат</h2>
-                        <p id="chatStatus">Нажмите на чат чтобы начать общение</p>
+                        <div class="chat-status">
+                            <span class="typing-animation" id="typingAnimation" style="display: none;">
+                                <span></span><span></span><span></span>
+                            </span>
+                            <span id="chatStatusText">Нажмите чтобы начать</span>
+                        </div>
                     </div>
                 </div>
                 <div class="chat-actions">
-                    <button class="action-btn" id="searchMessagesBtn" title="Поиск по сообщениям">
+                    <button class="action-btn" id="callBtn" title="Звонок">
+                        <i class="fas fa-phone-alt"></i>
+                        <div class="tooltip">Аудиозвонок</div>
+                    </button>
+                    <button class="action-btn" id="videoCallBtn" title="Видеозвонок">
+                        <i class="fas fa-video"></i>
+                        <div class="tooltip">Видеозвонок</div>
+                    </button>
+                    <button class="action-btn" id="searchMessagesBtn" title="Поиск">
                         <i class="fas fa-search"></i>
+                        <div class="tooltip">Поиск в чате</div>
                     </button>
-                    <button class="action-btn" id="chatInfoBtn" title="Информация о чате">
+                    <button class="action-btn" id="chatInfoBtn" title="Информация">
                         <i class="fas fa-info-circle"></i>
+                        <div class="tooltip">О чате</div>
                     </button>
-                    <button class="action-btn" id="exportChatBtn" title="Экспорт чата">
-                        <i class="fas fa-download"></i>
+                    <button class="action-btn" id="pinMessagesBtn" title="Закрепленные">
+                        <i class="fas fa-thumbtack"></i>
+                        <div class="tooltip">Закрепленные</div>
                     </button>
-                    <button class="action-btn" id="callBtn" title="Аудиозвонок">
-                        <i class="fas fa-phone"></i>
+                    <button class="action-btn" id="moreActionsBtn" title="Еще">
+                        <i class="fas fa-ellipsis-v"></i>
+                        <div class="tooltip">Действия</div>
                     </button>
                 </div>
             </div>
             
+            <!-- Закрепленные сообщения -->
+            <div class="pinned-messages-bar" id="pinnedMessagesBar" style="display: none;">
+                <div class="pinned-icon">
+                    <i class="fas fa-thumbtack"></i>
+                </div>
+                <div class="pinned-content" id="pinnedContent">
+                    <span class="pinned-text">Закрепленное сообщение</span>
+                </div>
+                <button class="close-pinned" id="closePinnedBar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
             <div class="messages-container" id="messagesContainer">
                 <div class="messages-area" id="messagesArea">
-                    <div class="welcome-message">
+                    <div class="welcome-message cosmic-welcome">
                         <div class="welcome-icon">
-                            <i class="fas fa-comments"></i>
+                            <i class="fas fa-comet"></i>
                         </div>
                         <h3>Добро пожаловать в Nexora</h3>
-                        <p>Выберите чат, чтобы начать общение</p>
+                        <p>Мессенджер, где общение становится искусством</p>
+                        <div class="features-grid">
+                            <div class="feature">
+                                <i class="fas fa-robot"></i>
+                                <span>AI Ассистент</span>
+                            </div>
+                            <div class="feature">
+                                <i class="fas fa-language"></i>
+                                <span>50+ языков</span>
+                            </div>
+                            <div class="feature">
+                                <i class="fas fa-gem"></i>
+                                <span>NFT коллекции</span>
+                            </div>
+                            <div class="feature">
+                                <i class="fas fa-lock"></i>
+                                <span>Секретные чаты</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
             
             <div class="typing-indicator" id="typingIndicator" style="display: none;">
                 <div class="typing-dots">
-                    <span></span>
-                    <span></span>
-                    <span></span>
+                    <span></span><span></span><span></span>
                 </div>
                 <span id="typingText">Кто-то печатает...</span>
             </div>
             
-            <div class="input-area">
+            <div class="input-area cosmic-glass">
                 <div class="input-tools">
                     <button class="tool-btn" id="emojiBtn" title="Эмодзи">
                         <i class="far fa-smile-wink"></i>
+                        <div class="tooltip">Эмодзи</div>
                     </button>
                     <button class="tool-btn" id="stickerBtn" title="Стикеры">
                         <i class="far fa-laugh-squint"></i>
+                        <div class="tooltip">Стикеры</div>
                     </button>
-                    <button class="tool-btn" id="voiceBtn" title="Голосовое сообщение (удерживайте)">
+                    <button class="tool-btn" id="gifBtn" title="GIF">
+                        <i class="fas fa-file-image"></i>
+                        <div class="tooltip">GIF анимации</div>
+                    </button>
+                    <button class="tool-btn" id="voiceBtn" title="Голосовое">
                         <i class="fas fa-microphone"></i>
+                        <div class="tooltip">Голосовое сообщение</div>
                     </button>
-                    <button class="tool-btn" id="attachBtn" title="Прикрепить файл">
+                    <button class="tool-btn" id="attachBtn" title="Вложения">
                         <i class="fas fa-paperclip"></i>
+                        <div class="tooltip">Прикрепить файл</div>
+                    </button>
+                    <button class="tool-btn" id="pollBtn" title="Опрос">
+                        <i class="fas fa-poll"></i>
+                        <div class="tooltip">Создать опрос</div>
+                    </button>
+                    <button class="tool-btn" id="scheduleBtn" title="Отложить">
+                        <i class="fas fa-clock"></i>
+                        <div class="tooltip">Отложить отправку</div>
+                    </button>
+                    <button class="tool-btn" id="aiAssistBtn" title="AI Помощник">
+                        <i class="fas fa-robot"></i>
+                        <div class="tooltip">AI ассистент</div>
                     </button>
                 </div>
                 <div class="message-input-wrapper">
-                    <input type="text" id="messageInput" placeholder="Введите сообщение..." autocomplete="off">
+                    <textarea id="messageInput" placeholder="Введите сообщение... (Shift+Enter для новой строки)" rows="1"></textarea>
                     <button class="send-btn" id="sendBtn">
                         <i class="fas fa-paper-plane"></i>
+                        <div class="send-effect"></div>
                     </button>
                 </div>
             </div>
         </main>
         
-        <!-- Панель профиля -->
+        <!-- Правая панель с профилем и настройками -->
         <aside class="profile-panel" id="profilePanel">
-            <div class="profile-header">
+            <div class="profile-header cosmic-glass">
                 <button class="close-profile-btn" id="closeProfileBtn">
                     <i class="fas fa-times"></i>
                 </button>
-                <h3>Мой профиль</h3>
+                <h3>Профиль</h3>
             </div>
             <div class="profile-content">
                 <div class="profile-avatar-large" id="profileAvatarContainer">
                     <img src="" alt="Profile" id="profileAvatar">
                     <button class="change-avatar-btn" id="changeAvatarBtn">
                         <i class="fas fa-camera"></i>
+                        <div class="btn-glow"></div>
                     </button>
+                    <div class="avatar-stats">
+                        <div class="avatar-stat">
+                            <i class="fas fa-star"></i>
+                            <span id="userLevel">1</span>
+                        </div>
+                    </div>
                 </div>
                 <div class="profile-info-edit">
-                    <input type="text" id="editUsername" class="edit-input" placeholder="Имя пользователя">
-                    <textarea id="editBio" class="edit-textarea" placeholder="О себе" rows="3"></textarea>
-                    <button class="save-profile-btn" id="saveProfileBtn">Сохранить изменения</button>
+                    <div class="input-group cosmic-input">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="editUsername" value="">
+                        <label>Имя пользователя</label>
+                    </div>
+                    <div class="input-group cosmic-input">
+                        <i class="fas fa-info-circle"></i>
+                        <textarea id="editBio" rows="3" placeholder="О себе..."></textarea>
+                        <label>О себе</label>
+                    </div>
+                    <button class="save-profile-btn cosmic-btn" id="saveProfileBtn">
+                        <span>Сохранить изменения</span>
+                        <i class="fas fa-save"></i>
+                    </button>
                 </div>
+                
                 <div class="profile-stats">
-                    <div class="stat">
+                    <div class="stat cosmic-card">
                         <i class="fas fa-comments"></i>
-                        <span id="statChats">0</span>
-                        <small>чатов</small>
-                    </div>
-                                        <div class="stat">
-                        <i class="fas fa-calendar"></i>
-                        <span id="statMemberSince">2024</span>
-                        <small>на сайте</small>
-                    </div>
-                    <div class="stat">
-                        <i class="fas fa-envelope"></i>
                         <span id="statMessages">0</span>
                         <small>сообщений</small>
                     </div>
+                    <div class="stat cosmic-card">
+                        <i class="fas fa-users"></i>
+                        <span id="statChats">0</span>
+                        <small>чатов</small>
+                    </div>
+                    <div class="stat cosmic-card">
+                        <i class="fas fa-fire"></i>
+                        <span id="statStreak">0</span>
+                        <small>дней</small>
+                    </div>
+                    <div class="stat cosmic-card">
+                        <i class="fas fa-trophy"></i>
+                        <span id="statAchievements">0</span>
+                        <small>достижений</small>
+                    </div>
                 </div>
+                
                 <div class="profile-menu">
-                    <div class="menu-item">
-                        <i class="fas fa-bell"></i>
-                        <span>Уведомления</span>
-                        <label class="switch">
-                            <input type="checkbox" id="notificationsToggle" checked>
-                            <span class="slider"></span>
-                        </label>
+                    <div class="menu-section">
+                        <h4><i class="fas fa-cog"></i> Настройки</h4>
+                        <div class="menu-item">
+                            <i class="fas fa-bell"></i>
+                            <span>Уведомления</span>
+                            <label class="cosmic-switch">
+                                <input type="checkbox" id="notificationsToggle" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="menu-item">
+                            <i class="fas fa-palette"></i>
+                            <span>Тема оформления</span>
+                            <select id="themeSelect">
+                                <option value="dark">🌙 Темная</option>
+                                <option value="light">☀️ Светлая</option>
+                                <option value="cosmic">✨ Космическая</option>
+                                <option value="aurora">🌌 Аврора</option>
+                                <option value="sunset">🌅 Закат</option>
+                                <option value="ocean">🌊 Океан</option>
+                            </select>
+                        </div>
+                        <div class="menu-item">
+                            <i class="fas fa-language"></i>
+                            <span>Язык интерфейса</span>
+                            <select id="languageSelect"></select>
+                        </div>
+                        <div class="menu-item">
+                            <i class="fas fa-moon"></i>
+                            <span>Ночной режим</span>
+                            <label class="cosmic-switch">
+                                <input type="checkbox" id="nightMode">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
                     </div>
-                    <div class="menu-item">
-                        <i class="fas fa-palette"></i>
-                        <span>Тема оформления</span>
-                        <select id="themeSelect">
-                            <option value="dark">Темная</option>
-                            <option value="light">Светлая</option>
-                            <option value="auto">Системная</option>
-                        </select>
+                    
+                    <div class="menu-section">
+                        <h4><i class="fas fa-shield-alt"></i> Безопасность</h4>
+                        <div class="menu-item" id="twoFactorAuth">
+                            <i class="fas fa-fingerprint"></i>
+                            <span>Двухфакторная аутентификация</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                        <div class="menu-item" id="secretChats">
+                            <i class="fas fa-lock"></i>
+                            <span>Секретные чаты</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                        <div class="menu-item" id="blockedUsers">
+                            <i class="fas fa-ban"></i>
+                            <span>Заблокированные</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
                     </div>
-                    <div class="menu-item">
-                        <i class="fas fa-language"></i>
-                        <span>Язык</span>
-                        <select id="languageSelect">
-                            <option value="ru">Русский</option>
-                            <option value="en">English</option>
-                        </select>
+                    
+                    <div class="menu-section">
+                        <h4><i class="fas fa-gem"></i> Премиум</h4>
+                        <div class="menu-item premium" id="premiumBtn">
+                            <i class="fas fa-crown"></i>
+                            <span>Nexora Premium</span>
+                            <span class="premium-badge">NEW</span>
+                        </div>
+                        <div class="menu-item" id="nftGallery">
+                            <i class="fas fa-image"></i>
+                            <span>NFT Галерея</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                        <div class="menu-item" id="walletBtn">
+                            <i class="fas fa-wallet"></i>
+                            <span>Крипто-кошелек</span>
+                            <span class="wallet-balance" id="walletBalance">0 NXR</span>
+                        </div>
                     </div>
-                    <div class="menu-item" id="logoutBtn">
+                    
+                    <div class="menu-section">
+                        <h4><i class="fas fa-chart-line"></i> Активность</h4>
+                        <div class="menu-item" id="statsBtn">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Статистика</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                        <div class="menu-item" id="achievementsBtn">
+                            <i class="fas fa-trophy"></i>
+                            <span>Достижения</span>
+                            <span class="new-badge" id="newAchievements">0</span>
+                        </div>
+                        <div class="menu-item" id="activityLog">
+                            <i class="fas fa-history"></i>
+                            <span>История активности</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="menu-divider"></div>
+                    
+                    <div class="menu-item danger" id="logoutBtn">
                         <i class="fas fa-sign-out-alt"></i>
                         <span>Выйти</span>
                         <i class="fas fa-chevron-right"></i>
@@ -345,96 +577,354 @@
                         <i class="fas fa-chevron-right"></i>
                     </div>
                 </div>
+                
+                <div class="app-version">
+                    <span>Nexora Ultimate v4.0.0</span>
+                    <span class="build-info">Build 2024.03.22</span>
+                </div>
             </div>
         </aside>
     </div>
 
-    <!-- МОДАЛЬНОЕ ОКНО СТИКЕРОВ -->
-    <div class="modal" id="stickerModal">
+    <!-- МОДАЛЬНОЕ ОКНО СТИКЕРОВ С КАТЕГОРИЯМИ -->
+    <div class="modal cosmic-modal" id="stickerModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Выберите стикер</h3>
+                <h3><i class="fas fa-laugh-beam"></i> Стикеры</h3>
+                <div class="sticker-categories">
+                    <button class="sticker-cat active" data-cat="all">Все</button>
+                    <button class="sticker-cat" data-cat="happy">😊 Счастливые</button>
+                    <button class="sticker-cat" data-cat="funny">😂 Смешные</button>
+                    <button class="sticker-cat" data-cat="love">❤️ Любовь</button>
+                    <button class="sticker-cat" data-cat="sad">😢 Грустные</button>
+                    <button class="sticker-cat" data-cat="cool">😎 Крутые</button>
+                    <button class="sticker-cat" data-cat="animals">🐱 Животные</button>
+                </div>
                 <button class="close-modal">&times;</button>
             </div>
-            <div class="sticker-grid" id="stickerGrid">
-                <div class="sticker" data-sticker="😊">😊</div>
-                <div class="sticker" data-sticker="😂">😂</div>
-                <div class="sticker" data-sticker="🥰">🥰</div>
-                <div class="sticker" data-sticker="😎">😎</div>
-                <div class="sticker" data-sticker="🤔">🤔</div>
-                <div class="sticker" data-sticker="😭">😭</div>
-                <div class="sticker" data-sticker="🔥">🔥</div>
-                <div class="sticker" data-sticker="✨">✨</div>
-                <div class="sticker" data-sticker="💯">💯</div>
-                <div class="sticker" data-sticker="🎉">🎉</div>
-                <div class="sticker" data-sticker="❤️">❤️</div>
-                <div class="sticker" data-sticker="👍">👍</div>
-                <div class="sticker" data-sticker="🙏">🙏</div>
-                <div class="sticker" data-sticker="🤝">🤝</div>
-                <div class="sticker" data-sticker="💪">💪</div>
-                <div class="sticker" data-sticker="🎨">🎨</div>
+            <div class="modal-body">
+                <div class="sticker-grid" id="stickerGrid"></div>
             </div>
         </div>
     </div>
     
-    <!-- МОДАЛЬНОЕ ОКНО ЭМОДЗИ -->
-    <div class="modal" id="emojiModal">
-        <div class="modal-content">
+    <!-- МОДАЛЬНОЕ ОКНО GIF АНИМАЦИЙ -->
+    <div class="modal cosmic-modal" id="gifModal">
+        <div class="modal-content modal-large">
             <div class="modal-header">
-                <h3>Эмодзи</h3>
+                <h3><i class="fas fa-file-image"></i> GIF анимации</h3>
+                <div class="gif-search">
+                    <input type="text" id="gifSearchInput" placeholder="Поиск GIF...">
+                    <button id="searchGifBtn"><i class="fas fa-search"></i></button>
+                </div>
                 <button class="close-modal">&times;</button>
             </div>
-            <div class="emoji-grid" id="emojiGrid"></div>
+            <div class="modal-body">
+                <div class="gif-grid" id="gifGrid">
+                    <div class="gif-categories">
+                        <button class="gif-cat" data-cat="trending">🔥 Тренды</button>
+                        <button class="gif-cat" data-cat="funny">😂 Смешные</button>
+                        <button class="gif-cat" data-cat="reaction">🎭 Реакции</button>
+                        <button class="gif-cat" data-cat="love">❤️ Романтичные</button>
+                        <button class="gif-cat" data-cat="animals">🐱 Животные</button>
+                    </div>
+                    <div class="gif-results" id="gifResults"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- МОДАЛЬНОЕ ОКНО ОПРОСА -->
+    <div class="modal cosmic-modal" id="pollModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-poll"></i> Создать опрос</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group">
+                    <label>Вопрос</label>
+                    <input type="text" id="pollQuestion" placeholder="Введите вопрос...">
+                </div>
+                <div class="poll-options" id="pollOptions">
+                    <div class="poll-option">
+                        <input type="text" placeholder="Вариант 1">
+                        <button class="remove-option"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div class="poll-option">
+                        <input type="text" placeholder="Вариант 2">
+                        <button class="remove-option"><i class="fas fa-times"></i></button>
+                    </div>
+                </div>
+                <button class="add-option-btn" id="addPollOption">
+                    <i class="fas fa-plus"></i> Добавить вариант
+                </button>
+                <div class="poll-settings">
+                    <label class="cosmic-switch">
+                        <input type="checkbox" id="pollAnonymous">
+                        <span class="slider"></span>
+                        <span>Анонимное голосование</span>
+                    </label>
+                    <label class="cosmic-switch">
+                        <input type="checkbox" id="pollMultiple">
+                        <span class="slider"></span>
+                        <span>Множественный выбор</span>
+                    </label>
+                </div>
+                <button class="create-poll-btn cosmic-btn" id="createPollBtn">
+                    <span>Создать опрос</span>
+                    <i class="fas fa-check"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- МОДАЛЬНОЕ ОКНО ЗАПЛАНИРОВАННЫХ СООБЩЕНИЙ -->
+    <div class="modal cosmic-modal" id="scheduleModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-clock"></i> Отложить сообщение</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="schedule-datetime">
+                    <input type="date" id="scheduleDate">
+                    <input type="time" id="scheduleTime">
+                </div>
+                <div class="schedule-presets">
+                    <button class="preset-btn" data-minutes="5">Через 5 минут</button>
+                    <button class="preset-btn" data-minutes="30">Через 30 минут</button>
+                    <button class="preset-btn" data-hours="1">Через 1 час</button>
+                    <button class="preset-btn" data-hours="24">Завтра</button>
+                </div>
+                <textarea id="scheduleMessage" placeholder="Введите сообщение..."></textarea>
+                <button class="schedule-send-btn cosmic-btn" id="scheduleSendBtn">
+                    <span>Запланировать</span>
+                    <i class="fas fa-calendar-plus"></i>
+                </button>
+            </div>
         </div>
     </div>
     
     <!-- МОДАЛЬНОЕ ОКНО ИНФОРМАЦИИ О ЧАТЕ -->
-    <div class="modal" id="chatInfoModal">
+    <div class="modal cosmic-modal" id="chatInfoModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Информация о чате</h3>
+                <h3><i class="fas fa-info-circle"></i> Информация о чате</h3>
                 <button class="close-modal">&times;</button>
             </div>
             <div class="modal-body" id="chatInfoContent"></div>
         </div>
     </div>
     
-    <!-- МОДАЛЬНОЕ ОКНО ПОДТВЕРЖДЕНИЯ -->
-    <div class="modal" id="confirmModal">
-        <div class="modal-content confirm-modal">
+    <!-- МОДАЛЬНОЕ ОКНО ЗАКРЕПЛЕННЫХ СООБЩЕНИЙ -->
+    <div class="modal cosmic-modal" id="pinnedMessagesModal">
+        <div class="modal-content">
             <div class="modal-header">
-                <h3 id="confirmTitle">Подтверждение</h3>
+                <h3><i class="fas fa-thumbtack"></i> Закрепленные сообщения</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body" id="pinnedMessagesList"></div>
+        </div>
+    </div>
+    
+    <!-- МОДАЛЬНОЕ ОКНО ДОСТИЖЕНИЙ -->
+    <div class="modal cosmic-modal" id="achievementsModal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3><i class="fas fa-trophy"></i> Мои достижения</h3>
                 <button class="close-modal">&times;</button>
             </div>
             <div class="modal-body">
-                <p id="confirmMessage">Вы уверены?</p>
-                <div class="confirm-buttons">
-                    <button class="confirm-no">Отмена</button>
-                    <button class="confirm-yes">Да</button>
+                <div class="achievements-stats">
+                    <div class="achievement-stat">
+                        <span class="stat-value" id="totalAchievements">0</span>
+                        <span class="stat-label">Всего достижений</span>
+                    </div>
+                    <div class="achievement-stat">
+                        <span class="stat-value" id="achievementPoints">0</span>
+                        <span class="stat-label">Очков опыта</span>
+                    </div>
+                    <div class="achievement-stat">
+                        <span class="stat-value" id="achievementRank">Новичок</span>
+                        <span class="stat-label">Ранг</span>
+                    </div>
+                </div>
+                <div class="achievements-grid" id="achievementsGrid"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- МОДАЛЬНОЕ ОКНО СТАТИСТИКИ -->
+    <div class="modal cosmic-modal" id="statsModal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3><i class="fas fa-chart-line"></i> Моя статистика</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <i class="fas fa-comment-dots"></i>
+                        <div class="stat-info">
+                            <span class="stat-value" id="statsTotalMessages">0</span>
+                            <span class="stat-label">Всего сообщений</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-users"></i>
+                        <div class="stat-info">
+                            <span class="stat-value" id="statsTotalChats">0</span>
+                            <span class="stat-label">Чатов</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-fire"></i>
+                        <div class="stat-info">
+                            <span class="stat-value" id="statsCurrentStreak">0</span>
+                            <span class="stat-label">Дней подряд</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-clock"></i>
+                        <div class="stat-info">
+                            <span class="stat-value" id="statsActiveTime">0</span>
+                            <span class="stat-label">Часов в мессенджере</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-smile"></i>
+                        <div class="stat-info">
+                            <span class="stat-value" id="statsReactions">0</span>
+                            <span class="stat-label">Реакций поставлено</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-microphone"></i>
+                        <div class="stat-info">
+                            <span class="stat-value" id="statsVoiceMessages">0</span>
+                            <span class="stat-label">Голосовых сообщений</span>
+                        </div>
+                    </div>
+                </div>
+                <canvas id="activityChart" width="600" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <!-- МОДАЛЬНОЕ ОКНО ЯЗЫКОВ -->
+    <div class="modal cosmic-modal" id="languageModal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3><i class="fas fa-globe"></i> Выберите язык</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="language-search">
+                    <input type="text" id="languageSearch" placeholder="Поиск языка...">
+                </div>
+                <div class="language-grid-full" id="languageGridFull"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- МОДАЛЬНОЕ ОКНО NFT ГАЛЕРЕИ -->
+    <div class="modal cosmic-modal" id="nftModal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3><i class="fas fa-gem"></i> Моя NFT коллекция</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="nft-stats">
+                    <div class="nft-stat">
+                        <span class="stat-value" id="nftCount">0</span>
+                        <span class="stat-label">NFT в коллекции</span>
+                    </div>
+                    <div class="nft-stat">
+                        <span class="stat-value" id="nftValue">0</span>
+                        <span class="stat-label">Общая стоимость</span>
+                    </div>
+                </div>
+                <div class="nft-grid" id="nftGrid"></div>
+                <button class="create-nft-btn" id="createNftBtn">
+                    <i class="fas fa-plus"></i> Создать NFT
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- МОДАЛЬНОЕ ОКНО КРИПТО-КОШЕЛЬКА -->
+    <div class="modal cosmic-modal" id="walletModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-wallet"></i> Крипто-кошелек</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="wallet-balance-large">
+                    <span class="balance-amount" id="walletBalanceLarge">0</span>
+                    <span class="balance-currency">NXR</span>
+                </div>
+                <div class="wallet-address">
+                    <span id="walletAddress">0x...</span>
+                    <button id="copyAddressBtn"><i class="fas fa-copy"></i></button>
+                </div>
+                <div class="wallet-actions">
+                    <button class="wallet-action" id="receiveBtn">
+                        <i class="fas fa-arrow-down"></i>
+                        <span>Получить</span>
+                    </button>
+                    <button class="wallet-action" id="sendBtn">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>Отправить</span>
+                    </button>
+                    <button class="wallet-action" id="buyTokensBtn">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Купить NXR</span>
+                    </button>
+                </div>
+                <div class="transaction-history">
+                    <h4>История транзакций</h4>
+                    <div class="transactions-list" id="transactionsList"></div>
                 </div>
             </div>
         </div>
     </div>
     
-    <!-- УВЕДОМЛЕНИЕ -->
-    <div id="notificationContainer"></div>
-    
-    <!-- ЗАПИСЬ ГОЛОСА -->
+    <!-- ПАНЕЛЬ ЗАПИСИ ГОЛОСА -->
     <div class="voice-recording-panel" id="voiceRecordingPanel" style="display: none;">
         <div class="voice-recording-content">
             <div class="voice-wave-animation">
-                <div class="wave"></div>
-                <div class="wave"></div>
-                <div class="wave"></div>
-                <div class="wave"></div>
-                <div class="wave"></div>
+                <div class="wave"></div><div class="wave"></div><div class="wave"></div>
+                <div class="wave"></div><div class="wave"></div><div class="wave"></div>
             </div>
             <p>Запись... Отпустите для отправки</p>
-            <span id="recordingTime">0:00</span>
+            <div class="recording-controls">
+                <span id="recordingTime">0:00</span>
+                <button id="cancelRecordingBtn"><i class="fas fa-times"></i> Отмена</button>
+            </div>
         </div>
     </div>
     
-    <script src="app.js"></script>
-</body>
-</html>
-                       
+    <!-- ПАНЕЛЬ AI АССИСТЕНТА -->
+    <div class="ai-assistant-panel" id="aiAssistantPanel" style="display: none;">
+        <div class="ai-header">
+            <div class="ai-avatar">
+                <i class="fas fa-robot"></i>
+            </div>
+            <h3>AI Assistant</h3>
+            <button class="close-ai" id="closeAiBtn"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="ai-messages" id="aiMessages">
+            <div class="ai-message">
+                <div class="ai-bubble">Привет! Я AI ассистент Nexora. Чем могу помочь? 🤖</div>
+            </div>
+        </div>
+        <div class="ai-input">
+            <input type="text" id="aiInput" placeholder="Задай вопрос...">
+            <button id="sendAiBtn"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+    
+   
