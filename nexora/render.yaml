@@ -1,0 +1,40 @@
+services:
+  # Backend API
+  - type: web
+    name: nexora-api
+    runtime: node
+    plan: free
+    buildCommand: cd server && npm install && npm run build
+    startCommand: cd server && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        fromDatabase:
+          name: nexora-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: ENCRYPTION_KEY
+        generateValue: true
+      - key: CLIENT_URL
+        value: https://nexora-client.onrender.com
+
+  # Frontend Client
+  - type: web
+    name: nexora-client
+    runtime: node
+    plan: free
+    buildCommand: cd client && npm install && npm run build
+    startCommand: cd client && npm run preview -- --port 10000
+    envVars:
+      - key: VITE_API_URL
+        value: https://nexora-api.onrender.com/api/v1
+      - key: VITE_WS_URL
+        value: wss://nexora-api.onrender.com
+
+databases:
+  - name: nexora-db
+    plan: free
