@@ -4,82 +4,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#6366f1">
-    <title>Nexora Ultimate - Мессенджер Будущего</title>
+    <title>Nexora | Мессенджер будущего</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <!-- КОСМИЧЕСКАЯ ЗАГРУЗКА -->
-    <div class="splash-screen" id="splash">
+
+    <!-- SPLASH SCREEN -->
+    <div class="splash" id="splash">
         <div class="splash-content">
-            <div class="logo-3d">
-                <div class="logo-front"><i class="fas fa-comet"></i></div>
-                <div class="logo-back"></div>
-            </div>
+            <div class="logo-3d"><i class="fas fa-comet"></i></div>
             <h1 class="gradient-text">Nexora</h1>
-            <div class="loader-ring"></div>
-            <div class="progress-container">
-                <div class="progress-fill" id="progressFill"></div>
-            </div>
-            <p id="loadingText">Загрузка вселенной...</p>
+            <div class="loader"></div>
+            <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+            <p id="splashText">Загрузка вселенной...</p>
         </div>
     </div>
 
-    <!-- АВТОРИЗАЦИЯ -->
+    <!-- AUTH SCREEN -->
     <div class="auth-screen" id="authScreen">
-        <div class="particles-bg"></div>
         <div class="auth-card glass">
             <div class="auth-header">
                 <div class="auth-logo"><i class="fas fa-comment-dots"></i></div>
                 <h1>Nexora</h1>
-                <p>Мессенджер будущего</p>
+                <p>Современный способ общения</p>
             </div>
-            
             <div class="auth-tabs">
                 <button class="auth-tab active" data-tab="login">Вход</button>
                 <button class="auth-tab" data-tab="register">Регистрация</button>
             </div>
-            
             <form id="loginForm" class="auth-form active">
-                <div class="input-group">
-                    <i class="fas fa-envelope"></i>
-                    <input type="email" placeholder="Email" id="loginEmail">
-                </div>
-                <div class="input-group">
-                    <i class="fas fa-lock"></i>
-                    <input type="password" placeholder="Пароль" id="loginPassword">
-                </div>
-                <button class="auth-btn">Войти</button>
+                <div class="input-group"><i class="fas fa-envelope"></i><input type="email" placeholder="Email" id="loginEmail" required></div>
+                <div class="input-group"><i class="fas fa-lock"></i><input type="password" placeholder="Пароль" id="loginPassword" required></div>
+                <button type="submit" class="btn-primary">Войти</button>
                 <div class="demo-users">
-                    <button class="demo-user" data-email="alex@example.com">👨‍💻 Алексей</button>
-                    <button class="demo-user" data-email="maria@example.com">👩‍🎨 Мария</button>
-                    <button class="demo-user" data-email="dmitry@example.com">👨‍💼 Дмитрий</button>
+                    <button type="button" class="demo-btn" data-email="alex@example.com">👨‍💻 Алексей</button>
+                    <button type="button" class="demo-btn" data-email="maria@example.com">👩‍🎨 Мария</button>
+                    <button type="button" class="demo-btn" data-email="dmitry@example.com">👨‍💼 Дмитрий</button>
                 </div>
             </form>
-            
             <form id="registerForm" class="auth-form">
-                <div class="input-group">
-                    <i class="fas fa-user"></i>
-                    <input type="text" placeholder="Имя" id="regName">
-                </div>
-                <div class="input-group">
-                    <i class="fas fa-envelope"></i>
-                    <input type="email" placeholder="Email" id="regEmail">
-                </div>
-                <div class="input-group">
-                    <i class="fas fa-lock"></i>
-                    <input type="password" placeholder="Пароль" id="regPassword">
-                </div>
-                <button class="auth-btn">Создать аккаунт</button>
+                <div class="input-group"><i class="fas fa-user"></i><input type="text" placeholder="Имя" id="regName" required></div>
+                <div class="input-group"><i class="fas fa-envelope"></i><input type="email" placeholder="Email" id="regEmail" required></div>
+                <div class="input-group"><i class="fas fa-lock"></i><input type="password" placeholder="Пароль" id="regPassword" required></div>
+                <button type="submit" class="btn-primary">Создать аккаунт</button>
             </form>
         </div>
     </div>
 
-    <!-- ОСНОВНОЙ ИНТЕРФЕЙС -->
+    <!-- MAIN APP -->
     <div class="app" id="app" style="display: none;">
-        <!-- Сайдбар -->
-        <aside class="sidebar" id="sidebar">
+        <!-- SIDEBAR -->
+        <aside class="sidebar glass">
             <div class="sidebar-header">
                 <div class="user-card" id="profileBtn">
                     <img class="avatar" id="userAvatar" src="">
@@ -89,35 +66,34 @@
                     </div>
                     <button class="icon-btn"><i class="fas fa-cog"></i></button>
                 </div>
-                <div class="search">
+                <div class="search-bar">
                     <i class="fas fa-search"></i>
                     <input type="text" placeholder="Поиск..." id="searchInput">
                 </div>
             </div>
-            
             <div class="chat-filters">
                 <button class="filter-btn active" data-filter="all">Все</button>
                 <button class="filter-btn" data-filter="unread"><i class="fas fa-envelope"></i> <span id="unreadCount">0</span></button>
-                <button class="filter-btn" data-filter="groups"><i class="fas fa-users"></i></button>
-                <button class="filter-btn" id="languageFilter"><i class="fas fa-globe"></i> 50+</button>
+                <button class="filter-btn" data-filter="groups"><i class="fas fa-users"></i> Группы</button>
+                <button class="filter-btn" id="languageBtn"><i class="fas fa-globe"></i> Язык</button>
             </div>
-            
-            <div class="chats-list" id="chatsList"></div>
-            
+            <div class="chats-list" id="chatsList">
+                <div class="loading"><i class="fas fa-spinner fa-spin"></i> Загрузка чатов...</div>
+            </div>
             <div class="sidebar-footer">
-                <button class="footer-btn" id="createChatBtn"><i class="fas fa-plus"></i> Новый чат</button>
-                <button class="footer-btn" id="createGroupBtn"><i class="fas fa-users"></i> Группа</button>
+                <button class="footer-btn" id="newChatBtn"><i class="fas fa-plus"></i> Новый чат</button>
+                <button class="footer-btn" id="newGroupBtn"><i class="fas fa-users"></i> Группа</button>
             </div>
         </aside>
-        
-        <!-- Чат -->
+
+        <!-- CHAT AREA -->
         <main class="chat-main">
-            <div class="chat-header">
+            <div class="chat-header glass">
                 <button class="mobile-menu-btn" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
                 <img class="chat-avatar" id="chatAvatar" src="">
                 <div class="chat-info">
                     <h2 id="chatName">Выберите чат</h2>
-                    <div class="chat-status" id="chatStatus">
+                    <div class="chat-status">
                         <span class="typing-dots" id="typingDots" style="display: none;"></span>
                         <span id="chatStatusText">онлайн</span>
                     </div>
@@ -128,12 +104,10 @@
                     <button class="action-btn" id="infoBtn"><i class="fas fa-info-circle"></i></button>
                 </div>
             </div>
-            
             <div class="messages-container" id="messagesContainer">
                 <div class="messages" id="messagesArea"></div>
             </div>
-            
-            <div class="input-area">
+            <div class="input-area glass">
                 <div class="tools">
                     <button class="tool" id="emojiBtn"><i class="far fa-smile"></i></button>
                     <button class="tool" id="stickerBtn"><i class="far fa-laugh"></i></button>
@@ -149,9 +123,9 @@
                 </div>
             </div>
         </main>
-        
-        <!-- Правая панель -->
-        <aside class="right-panel" id="rightPanel">
+
+        <!-- RIGHT PANEL (Profile) -->
+        <aside class="right-panel glass" id="rightPanel">
             <div class="panel-header">
                 <h3>Профиль</h3>
                 <button class="close-panel" id="closePanelBtn">&times;</button>
@@ -171,87 +145,77 @@
                 </div>
                 <div class="menu">
                     <div class="menu-item" id="themeToggle"><i class="fas fa-palette"></i> Тема</div>
-                    <div class="menu-item" id="languageMenu"><i class="fas fa-globe"></i> Язык (50+)</div>
                     <div class="menu-item" id="nftMenu"><i class="fas fa-gem"></i> NFT коллекция</div>
                     <div class="menu-item" id="walletMenu"><i class="fas fa-wallet"></i> Кошелек <span id="walletBalance">0 NXR</span></div>
                     <div class="menu-item" id="achievementsMenu"><i class="fas fa-trophy"></i> Достижения</div>
                     <div class="menu-item" id="statsMenu"><i class="fas fa-chart-line"></i> Статистика</div>
+                    <div class="menu-item" id="privacyMenu"><i class="fas fa-shield-alt"></i> Конфиденциальность</div>
+                    <div class="menu-item" id="termsMenu"><i class="fas fa-file-alt"></i> Условия</div>
                     <div class="menu-item danger" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Выйти</div>
                 </div>
             </div>
         </aside>
     </div>
 
-    <!-- МОДАЛКИ -->
+    <!-- MODALS -->
     <div class="modal" id="languageModal">
-        <div class="modal-content">
+        <div class="modal-content glass">
             <div class="modal-header"><h3>🌍 50+ языков</h3><button class="close-modal">&times;</button></div>
             <div class="modal-body"><div class="language-grid" id="languageGrid"></div></div>
         </div>
     </div>
-    
     <div class="modal" id="stickerModal">
-        <div class="modal-content">
-            <div class="modal-header"><h3>🎨 Стикеры</h3><button class="close-modal">&times;</button></div>
-            <div class="modal-body"><div class="sticker-grid" id="stickerGrid"></div></div>
-        </div>
+        <div class="modal-content glass"><div class="modal-header"><h3>🎨 Стикеры</h3><button class="close-modal">&times;</button></div><div class="modal-body"><div class="sticker-grid" id="stickerGrid"></div></div></div>
     </div>
-    
     <div class="modal" id="gifModal">
-        <div class="modal-content modal-large">
-            <div class="modal-header"><h3>🎬 GIF анимации</h3><button class="close-modal">&times;</button></div>
-            <div class="modal-body"><div class="gif-grid" id="gifGrid"></div></div>
-        </div>
+        <div class="modal-content glass modal-large"><div class="modal-header"><h3>🎬 GIF анимации</h3><button class="close-modal">&times;</button></div><div class="modal-body"><div class="gif-grid" id="gifGrid"></div></div></div>
     </div>
-    
     <div class="modal" id="pollModal">
-        <div class="modal-content">
-            <div class="modal-header"><h3>📊 Создать опрос</h3><button class="close-modal">&times;</button></div>
-            <div class="modal-body">
-                <input type="text" id="pollQuestion" placeholder="Вопрос" class="poll-input">
-                <div id="pollOptionsList"></div>
-                <button id="addPollOption" class="add-btn"><i class="fas fa-plus"></i> Добавить вариант</button>
-                <button id="createPollBtn" class="create-btn">Создать опрос</button>
-            </div>
-        </div>
+        <div class="modal-content glass"><div class="modal-header"><h3>📊 Опрос</h3><button class="close-modal">&times;</button></div><div class="modal-body">
+            <input type="text" id="pollQuestion" placeholder="Вопрос" class="poll-input">
+            <div id="pollOptionsList"></div>
+            <button id="addPollOption" class="add-btn"><i class="fas fa-plus"></i> Добавить вариант</button>
+            <button id="createPollBtn" class="create-btn">Создать опрос</button>
+        </div></div>
     </div>
-    
+    <div class="modal" id="scheduleModal">
+        <div class="modal-content glass"><div class="modal-header"><h3>⏰ Отложить сообщение</h3><button class="close-modal">&times;</button></div><div class="modal-body">
+            <input type="datetime-local" id="scheduleDateTime" class="schedule-input">
+            <textarea id="scheduleText" placeholder="Сообщение" rows="3"></textarea>
+            <div class="schedule-presets"><button data-minutes="5">5 мин</button><button data-minutes="30">30 мин</button><button data-minutes="60">1 час</button><button data-minutes="1440">Завтра</button></div>
+            <button id="scheduleSendBtn" class="create-btn">Запланировать</button>
+        </div></div>
+    </div>
     <div class="modal" id="nftModal">
-        <div class="modal-content modal-large">
-            <div class="modal-header"><h3>💎 Моя NFT коллекция</h3><button class="close-modal">&times;</button></div>
-            <div class="modal-body"><div class="nft-grid" id="nftGrid"></div></div>
-        </div>
+        <div class="modal-content glass modal-large"><div class="modal-header"><h3>💎 NFT коллекция</h3><button class="close-modal">&times;</button></div><div class="modal-body"><div class="nft-grid" id="nftGrid"></div></div></div>
     </div>
-    
     <div class="modal" id="achievementsModal">
-        <div class="modal-content">
-            <div class="modal-header"><h3>🏆 Достижения</h3><button class="close-modal">&times;</button></div>
-            <div class="modal-body"><div id="achievementsList"></div></div>
-        </div>
+        <div class="modal-content glass"><div class="modal-header"><h3>🏆 Достижения</h3><button class="close-modal">&times;</button></div><div class="modal-body"><div id="achievementsList"></div></div></div>
     </div>
-    
     <div class="modal" id="statsModal">
-        <div class="modal-content">
-            <div class="modal-header"><h3>📈 Статистика</h3><button class="close-modal">&times;</button></div>
-            <div class="modal-body"><div id="statsContent"></div></div>
-        </div>
+        <div class="modal-content glass"><div class="modal-header"><h3>📈 Статистика</h3><button class="close-modal">&times;</button></div><div class="modal-body"><div id="statsContent"></div></div></div>
     </div>
-    
     <div class="modal" id="walletModal">
-        <div class="modal-content">
-            <div class="modal-header"><h3>💰 Крипто-кошелек</h3><button class="close-modal">&times;</button></div>
-            <div class="modal-body">
-                <div class="wallet-balance"><span id="walletBalanceLarge">0</span> NXR</div>
-                <div class="wallet-address"><span id="walletAddress">0x...</span><button id="copyAddress"><i class="fas fa-copy"></i></button></div>
-                <div class="wallet-actions">
-                    <button id="receiveNXR"><i class="fas fa-arrow-down"></i> Получить</button>
-                    <button id="sendNXR"><i class="fas fa-arrow-up"></i> Отправить</button>
-                </div>
-            </div>
-        </div>
+        <div class="modal-content glass"><div class="modal-header"><h3>💰 Крипто-кошелек</h3><button class="close-modal">&times;</button></div><div class="modal-body">
+            <div class="wallet-balance"><span id="walletBalanceLarge">0</span> NXR</div>
+            <div class="wallet-address"><span id="walletAddress"></span><button id="copyAddressBtn"><i class="fas fa-copy"></i></button></div>
+            <div class="wallet-actions"><button id="receiveNXR"><i class="fas fa-arrow-down"></i> Получить</button><button id="sendNXR"><i class="fas fa-arrow-up"></i> Отправить</button></div>
+        </div></div>
     </div>
-    
-    <div class="ai-panel" id="aiPanel" style="display: none;">
+    <div class="modal" id="privacyModal">
+        <div class="modal-content glass"><div class="modal-header"><h3>🔒 Политика конфиденциальности</h3><button class="close-modal">&times;</button></div><div class="modal-body terms-content">
+            <h4>Какие данные мы собираем?</h4><p>• Имя пользователя и email<br>• Аватар<br>• История сообщений (только на устройстве)</p>
+            <h4>Как мы используем данные?</h4><p>Для работы мессенджера и улучшения сервиса. Данные не передаются третьим лицам.</p>
+            <h4>Безопасность</h4><p>Сообщения не шифруются в демо-версии, но в будущем будет end-to-end шифрование.</p>
+        </div></div>
+    </div>
+    <div class="modal" id="termsModal">
+        <div class="modal-content glass"><div class="modal-header"><h3>📜 Условия использования</h3><button class="close-modal">&times;</button></div><div class="modal-body terms-content">
+            <p>Используя Nexora, вы соглашаетесь с правилами: запрещен спам, оскорбления, незаконный контент. Мы оставляем право блокировать нарушителей.</p>
+        </div></div>
+    </div>
+
+    <div class="ai-panel glass" id="aiPanel" style="display: none;">
         <div class="ai-header"><i class="fas fa-robot"></i> AI Assistant <button id="closeAiBtn"><i class="fas fa-times"></i></button></div>
         <div class="ai-messages" id="aiMessages"><div class="ai-message">Привет! Я AI ассистент. Чем помочь?</div></div>
         <div class="ai-input"><input id="aiInput" placeholder="Спроси меня..."><button id="sendAiBtn"><i class="fas fa-paper-plane"></i></button></div>
