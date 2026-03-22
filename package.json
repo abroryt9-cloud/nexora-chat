@@ -1,33 +1,17 @@
 {
-  "name": "nexora-messenger",
-  "version": "3.0.0",
-  "description": "Современный мессенджер с реальным временем, стикерами, голосовыми сообщениями и полным функционалом",
+  "name": "nexora-ultimate",
+  "version": "1.0.0",
+  "description": "Современный мессенджер с AI, NFT, кошельком и 50+ языками",
   "main": "server/server.js",
   "scripts": {
     "start": "node server/server.js",
-    "dev": "nodemon server/server.js",
-    "pm2": "pm2 start server/server.js --name nexora",
-    "stop": "pm2 stop nexora"
+    "dev": "nodemon server/server.js"
   },
-  "keywords": [
-    "chat",
-    "messenger",
-    "websocket",
-    "realtime",
-    "voice-messages",
-    "stickers",
-    "nexora"
-  ],
-  "author": "Nexora Team",
-  "license": "MIT",
   "dependencies": {
     "express": "^4.18.2",
     "ws": "^8.14.2"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
-  },
-  "engines": {
-    "node": ">=14.0.0"
   }
 }
