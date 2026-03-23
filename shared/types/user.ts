@@ -14,6 +14,8 @@ export interface IUser {
   statistics?: IUserStatistics;
   language: string;
   theme: string;
+  bio?: string;
+  status?: string;
 }
 
 export interface IWallet {

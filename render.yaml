@@ -1,14 +1,19 @@
 services:
-  # Backend API
+  # Backend API (Root server.js)
   - type: web
     name: nexora-api
     runtime: node
     plan: free
-    buildCommand: cd server && npm install && npm run build
-    startCommand: cd server && npm start
+    region: frankfurt
+    branch: main
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /health
     envVars:
       - key: NODE_ENV
         value: production
+      - key: PORT
+        value: 5000
       - key: MONGODB_URI
         fromDatabase:
           name: nexora-db
@@ -22,14 +27,20 @@ services:
       - key: CLIENT_URL
         value: https://nexora-client.onrender.com
 
-  # Frontend Client
+  # Frontend Client (опционально, можно объединить с backend)
   - type: web
     name: nexora-client
     runtime: node
     plan: free
+    region: frankfurt
+    branch: main
     buildCommand: cd client && npm install && npm run build
-    startCommand: cd client && npm run preview -- --port 10000
+    startCommand: cd client && npm run preview -- --port $PORT
     envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
       - key: VITE_API_URL
         value: https://nexora-api.onrender.com/api/v1
       - key: VITE_WS_URL
@@ -38,3 +49,6 @@ services:
 databases:
   - name: nexora-db
     plan: free
+    region: frankfurt
+    databaseName: nexora
+    user: nexora_user

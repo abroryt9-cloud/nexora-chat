@@ -29,6 +29,7 @@ export const setupSocketHandlers = (io: Server) => {
     const chats = await Chat.find({ participants: user._id });
     chats.forEach(chat => socket.join(chat._id.toString()));
 
+    // Chat events
     socket.on('joinChat', (chatId: string) => {
       socket.join(chatId);
     });
@@ -41,6 +42,24 @@ export const setupSocketHandlers = (io: Server) => {
       socket.to(chatId).emit('userTyping', { userId: user._id, isTyping });
     });
 
+    // Video/Voice Call events
+    socket.on('callUser', ({ to, signal, isVideo }) => {
+      socket.to(`user:${to}`).emit('incomingCall', { from: user._id, signal, isVideo });
+    });
+
+    socket.on('answerCall', ({ to, signal }) => {
+      socket.to(`user:${to}`).emit('callAnswered', { from: user._id, signal });
+    });
+
+    socket.on('endCall', ({ to }) => {
+      socket.to(`user:${to}`).emit('callEnded');
+    });
+
+    socket.on('iceCandidate', ({ to, candidate }) => {
+      socket.to(`user:${to}`).emit('iceCandidate', { from: user._id, candidate });
+    });
+
+    // Disconnect
     socket.on('disconnect', async () => {
       await User.findByIdAndUpdate(user._id, { isOnline: false, lastSeen: new Date() });
       await redisClient.del(`user:${user._id}:socket`);

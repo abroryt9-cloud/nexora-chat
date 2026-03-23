@@ -1,7 +1,98 @@
 [data-theme="dark"] {
+  /* Background */
   --bg-primary: #1a1a2e;
   --bg-secondary: #16213e;
-  --text-primary: #eee;
-  --text-secondary: #aaa;
+  --bg-tertiary: #0f3460;
+  --bg-card: rgba(22, 33, 62, 0.8);
+  --bg-hover: rgba(45, 55, 72, 0.5);
+  
+  /* Text */
+  --text-primary: #e2e8f0;
+  --text-secondary: #a0aec0;
+  --text-muted: #718096;
+  
+  /* Colors */
   --border-color: #2d3748;
+  --accent-primary: #7c3aed;
+  --accent-secondary: #a855f7;
+  --accent-glow: rgba(124, 58, 237, 0.3);
+  
+  /* Message bubbles */
+  --message-own: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+  --message-other: rgba(45, 55, 72, 0.6);
+  
+  /* Status */
+  --online: #10b981;
+  --away: #f59e0b;
+  --offline: #6b7280;
+  
+  /* Effects */
+  --glow-shadow: 0 0 20px rgba(124, 58, 237, 0.25);
+  --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  
+  /* Default */
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  background-attachment: fixed;
+}
+
+[data-theme="dark"] .glass-effect {
+  background: rgba(22, 33, 62, 0.5);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(45, 55, 72, 0.3);
+}
+
+[data-theme="dark"] .message-own {
+  background: var(--message-own);
+  box-shadow: var(--glow-shadow);
+}
+
+[data-theme="dark"] .message-other {
+  background: var(--message-other);
+}
+
+[data-theme="dark"] .btn-primary {
+  background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+  box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
+}
+
+[data-theme="dark"] .btn-primary:hover {
+  box-shadow: 0 6px 20px rgba(124, 58, 237, 0.5);
+}
+
+[data-theme="dark"] .sidebar {
+  background: rgba(26, 26, 46, 0.9);
+  backdrop-filter: blur(10px);
+  border-right: 1px solid rgba(45, 55, 72, 0.3);
+}
+
+[data-theme="dark"] .chat-item:hover {
+  background: var(--bg-hover);
+}
+
+[data-theme="dark"] .input-field {
+  background: rgba(45, 55, 72, 0.4);
+  border: 1px solid rgba(45, 55, 72, 0.5);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .input-field:focus {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 10px rgba(124, 58, 237, 0.2);
+}
+
+[data-theme="dark"] .scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+[data-theme="dark"] .scrollbar::-webkit-scrollbar-track {
+  background: rgba(26, 26, 46, 0.5);
+}
+
+[data-theme="dark"] .scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(124, 58, 237, 0.4);
+  border-radius: 3px;
+}
+
+[data-theme="dark"] .scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(168, 85, 247, 0.6);
 }

@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+@import './themes/light.css';
+@import './themes/dark.css';
+@import './themes/cosmic.css';
+@import './themes/aurora.css';
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -51,7 +56,55 @@
   * {
     @apply border-border;
   }
+  
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: "cv11", "ss01";
+    font-smooth: always;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Performance optimizations */
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Prevent layout shift */
+  img, video {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* Focus styles */
+  :focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+
+  /* Selection */
+  ::selection {
+    background-color: rgba(124, 58, 237, 0.3);
+    color: inherit;
+  }
+}
+
+/* Utility classes */
+@layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-500;
+  }
+  
+  .glass {
+    @apply bg-white/10 backdrop-blur-lg border border-white/20;
+  }
+
+  .animate-once {
+    animation-iteration-count: 1;
   }
 }

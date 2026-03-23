@@ -3,7 +3,14 @@ import { io, Socket } from 'socket.io-client';
 import { useDispatch } from 'react-redux';
 import { addMessage, updateMessage, deleteMessage, updateReaction } from '../store/chatSlice';
 
-export const useWebSocket = () => {
+interface UseWebSocketOptions {
+  onIncomingCall?: (data: { from: string; signal: RTCSessionDescriptionInit; isVideo: boolean }) => void;
+  onCallAnswered?: (data: { from: string; signal: RTCSessionDescriptionInit }) => void;
+  onCallEnded?: () => void;
+  onIceCandidate?: (data: { from: string; candidate: RTCIceCandidate }) => void;
+}
+
+export const useWebSocket = (options?: UseWebSocketOptions) => {
   const socketRef = useRef<Socket | null>(null);
   const dispatch = useDispatch();
 
@@ -16,6 +23,7 @@ export const useWebSocket = () => {
       transports: ['websocket'],
     });
 
+    // Message events
     socket.on('newMessage', (message) => {
       dispatch(addMessage(message));
     });
@@ -32,12 +40,18 @@ export const useWebSocket = () => {
       dispatch(updateReaction({ messageId, reactions }));
     });
 
+    // Call events
+    socket.on('incomingCall', options?.onIncomingCall || (() => {}));
+    socket.on('callAnswered', options?.onCallAnswered || (() => {}));
+    socket.on('callEnded', options?.onCallEnded || (() => {}));
+    socket.on('iceCandidate', options?.onIceCandidate || (() => {}));
+
     socketRef.current = socket;
 
     return () => {
       socket.disconnect();
     };
-  }, [dispatch]);
+  }, [dispatch, options]);
 
   return { socket: socketRef.current };
 };
