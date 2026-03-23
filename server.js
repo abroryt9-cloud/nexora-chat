@@ -57,19 +57,12 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve static files
-const clientDistPath = path.join(__dirname, 'client', 'dist');
+// Serve static files from public/ (main interface)
 const publicPath = path.join(__dirname, 'public');
 
-// Serve static files from both locations (public has priority for development)
 if (require('fs').existsSync(publicPath)) {
-  console.log('[Static] Serving from public/');
+  console.log('[Static] Serving static files from public/');
   app.use(express.static(publicPath));
-}
-
-if (require('fs').existsSync(clientDistPath)) {
-  console.log('[Static] Serving from client/dist/');
-  app.use(express.static(clientDistPath, { index: false }));
 }
 
 // Health check endpoint
@@ -152,26 +145,19 @@ app.use((req, res, next) => {
   }
 
   const publicIndexPath = path.join(publicPath, 'index.html');
-  const clientIndexPath = path.join(clientDistPath, 'index.html');
   const fs = require('fs');
   
-  // Try public/index.html first (for development)
+  // Serve public/index.html for all other routes
   if (fs.existsSync(publicIndexPath)) {
     console.log('[SPA] Serving public/index.html for', req.path);
     return res.sendFile(publicIndexPath);
   }
   
-  // Then try client/dist/index.html (for production)
-  if (fs.existsSync(clientIndexPath)) {
-    console.log('[SPA] Serving client/dist/index.html for', req.path);
-    return res.sendFile(clientIndexPath);
-  }
-  
-  // No index.html found - return JSON
+  // No index.html found
   console.log('[SPA] No index.html found for', req.path);
   res.status(404).json({
     error: 'Not Found',
-    message: 'Client not found. Please add public/index.html or build client',
+    message: 'public/index.html not found',
     path: req.path,
   });
 });
