@@ -59,7 +59,18 @@ app.use(express.urlencoded({ extended: true }));
 
 // Serve static files from client/dist (if exists)
 const clientDistPath = path.join(__dirname, 'client', 'dist');
-app.use(express.static(clientDistPath));
+const publicPath = path.join(__dirname, 'public');
+
+// Try client/dist first, then public folder
+if (require('fs').existsSync(clientDistPath)) {
+  console.log('[Static] Serving from client/dist');
+  app.use(express.static(clientDistPath));
+} else if (require('fs').existsSync(publicPath)) {
+  console.log('[Static] Serving from public');
+  app.use(express.static(publicPath));
+} else {
+  console.log('[Static] No static files found');
+}
 
 // Health check endpoint
 app.get('/health', (req, res) => {
@@ -133,20 +144,33 @@ io.on('connection', (socket) => {
   });
 });
 
-// 404 handler - serve client index.html for SPA
+// SPA fallback - serve index.html for all non-API routes
 app.use((req, res, next) => {
+  // Skip API routes
+  if (req.path.startsWith('/api') || req.path.startsWith('/health')) {
+    return next();
+  }
+
   const indexHtmlPath = path.join(clientDistPath, 'index.html');
+  const publicIndexPath = path.join(publicPath, 'index.html');
   const fs = require('fs');
   
+  // Try client/dist/index.html first
   if (fs.existsSync(indexHtmlPath)) {
-    res.sendFile(indexHtmlPath);
-  } else {
-    res.status(404).json({
-      error: 'Not Found',
-      message: 'Page not found',
-      path: req.path,
-    });
+    return res.sendFile(indexHtmlPath);
   }
+  
+  // Then try public/index.html
+  if (fs.existsSync(publicIndexPath)) {
+    return res.sendFile(publicIndexPath);
+  }
+  
+  // No index.html found
+  res.status(404).json({
+    error: 'Not Found',
+    message: 'Client build not found. Please run: npm run build',
+    path: req.path,
+  });
 });
 
 // Error handler

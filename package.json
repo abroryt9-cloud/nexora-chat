@@ -9,14 +9,16 @@
     "build:shared": "cd shared && npm run build",
     "build:server": "cd server && npm run build",
     "build:client": "cd client && npm run build",
-    "build": "npm run build:shared && npm run build:server && npm run build:client",
+    "build": "npm run build:client",
     "start": "node server.js",
     "start:server": "cd server && npm start",
     "start:client": "cd client && npm run preview",
     "dev:server": "cd server && npm run dev",
     "dev:client": "cd client && npm run dev",
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
-    "clean": "rm -rf node_modules shared/node_modules server/node_modules client/node_modules"
+    "clean": "rm -rf node_modules shared/node_modules server/node_modules client/node_modules",
+    "heroku-postbuild": "npm run build",
+    "render-build": "npm run build"
   },
   "dependencies": {
     "express": "^4.18.2",
