@@ -1,5 +1,34 @@
 import React, { useState } from 'react';
-import { stickerCategories } from '@nexora/shared';
+import { X } from 'lucide-react';
+import GlassCard from '../Common/GlassCard';
+
+const stickerCategories = [
+  {
+    id: 'happy',
+    name: 'Happy',
+    stickers: ['😊', '😂', '😍', '🥳', '😎', '🤗', '😁', '🥰', '😇', '😄'],
+  },
+  {
+    id: 'funny',
+    name: 'Funny',
+    stickers: ['🤪', '😜', '🫠', '🤣', '😹', '🙃', '🤡', '👻', '🤖', '🦄'],
+  },
+  {
+    id: 'love',
+    name: 'Love',
+    stickers: ['❤️', '😘', '💕', '🥰', '💖', '💗', '💓', '💞', '💝', '❣️'],
+  },
+  {
+    id: 'cool',
+    name: 'Cool',
+    stickers: ['😎', '🔥', '💪', '👑', '🌟', '✨', '⭐', '⚡', '🎸', '🚀'],
+  },
+  {
+    id: 'animals',
+    name: 'Animals',
+    stickers: ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯'],
+  },
+];
 
 interface StickerPickerProps {
   onSelect: (sticker: string) => void;
@@ -7,39 +36,52 @@ interface StickerPickerProps {
 }
 
 const StickerPicker: React.FC<StickerPickerProps> = ({ onSelect, onClose }) => {
-  const [activeCategory, setActiveCategory] = useState(stickerCategories[0].id);
+  const [selectedCategory, setSelectedCategory] = useState('happy');
 
-  const currentCategory = stickerCategories.find(c => c.id === activeCategory);
+  const currentStickers = stickerCategories.find(c => c.id === selectedCategory)?.stickers || [];
 
   return (
-    <div className="absolute bottom-20 left-4 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 p-2 w-80 z-50">
-      <div className="flex gap-2 border-b pb-2 mb-2">
-        {stickerCategories.map(cat => (
+    <GlassCard className="absolute bottom-20 right-4 w-80 z-50">
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="font-semibold text-white">Stickers</h3>
+        <button onClick={onClose} className="p-1 hover:bg-white/10 rounded-full">
+          <X className="w-5 h-5 text-[#8E9AAF]" />
+        </button>
+      </div>
+
+      {/* Categories */}
+      <div className="flex gap-2 mb-3 overflow-x-auto">
+        {stickerCategories.map((category) => (
           <button
-            key={cat.id}
-            onClick={() => setActiveCategory(cat.id)}
-            className={`px-2 py-1 text-sm rounded ${
-              activeCategory === cat.id
-                ? 'bg-blue-500 text-white'
-                : 'hover:bg-gray-100 dark:hover:bg-gray-700'
+            key={category.id}
+            onClick={() => setSelectedCategory(category.id)}
+            className={`px-3 py-1 rounded-full text-sm whitespace-nowrap transition ${
+              selectedCategory === category.id
+                ? 'bg-gradient-to-r from-[#6C5CE7] to-[#00D9FF] text-white'
+                : 'bg-[rgba(26,29,45,0.6)] text-[#8E9AAF] hover:text-white'
             }`}
           >
-            {cat.name}
+            {category.name}
           </button>
         ))}
       </div>
+
+      {/* Stickers Grid */}
       <div className="grid grid-cols-5 gap-2 max-h-64 overflow-y-auto">
-        {currentCategory?.stickers.map((sticker, idx) => (
+        {currentStickers.map((sticker, index) => (
           <button
-            key={idx}
-            onClick={() => onSelect(sticker)}
-            className="text-2xl p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
+            key={index}
+            onClick={() => {
+              onSelect(sticker);
+              onClose();
+            }}
+            className="text-3xl hover:scale-125 transition p-2 hover:bg-white/10 rounded-lg"
           >
             {sticker}
           </button>
         ))}
       </div>
-    </div>
+    </GlassCard>
   );
 };
 

@@ -18,7 +18,8 @@ export const useWebSocket = (options?: UseWebSocketOptions) => {
     const token = localStorage.getItem('token');
     if (!token) return;
 
-    const socket = io(import.meta.env.VITE_WS_URL, {
+    const wsUrl = (import.meta as any).env?.VITE_WS_URL || 'http://localhost:5000';
+    const socket = io(wsUrl, {
       auth: { token },
       transports: ['websocket'],
     });
@@ -33,11 +34,11 @@ export const useWebSocket = (options?: UseWebSocketOptions) => {
     });
 
     socket.on('messageDeleted', (messageId) => {
-      dispatch(deleteMessage(messageId));
+      (dispatch as any)(deleteMessage(messageId));
     });
 
     socket.on('reactionUpdated', ({ messageId, reactions }) => {
-      dispatch(updateReaction({ messageId, reactions }));
+      (dispatch as any)(updateReaction({ messageId, reactions }));
     });
 
     // Call events

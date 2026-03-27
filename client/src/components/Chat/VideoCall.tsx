@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { X, Mic, MicOff, Video, VideoOff, Phone, PhoneOff } from 'lucide-react';
+import { X, Mic, MicOff, Video, VideoOff, PhoneOff } from 'lucide-react';
 import { useWebSocket } from '../../hooks/useWebSocket';
 import { useAuth } from '../../hooks/useAuth';
 
 interface VideoCallProps {
-  chatId: string;
+  chatId?: string;
   participantId: string;
   participantName: string;
   participantAvatar?: string;

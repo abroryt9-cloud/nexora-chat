@@ -6,7 +6,7 @@ import { Menu, Sun, Moon, Stars, LogOut, Sparkles } from 'lucide-react';
 import MobileMenu from './MobileMenu';
 
 const Header: React.FC = () => {
-  const { user, logout } = useAuth();
+  const { logout } = useAuth();
   const { theme, setTheme } = useTheme();
   const { language, setLanguage, languages } = useLanguage();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);

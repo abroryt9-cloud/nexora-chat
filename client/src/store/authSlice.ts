@@ -4,12 +4,14 @@ import { IUser } from '@nexora/shared';
 
 interface AuthState {
   user: IUser | null;
+  token: string | null;
   loading: boolean;
   error: string | null;
 }
 
 const initialState: AuthState = {
   user: null,
+  token: null,
   loading: false,
   error: null,
 };
@@ -93,6 +95,7 @@ const authSlice = createSlice({
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload.user;
+        state.token = action.payload.token;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
@@ -100,9 +103,15 @@ const authSlice = createSlice({
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.user = action.payload.user;
+        state.token = action.payload.token;
+      })
+      .addCase(verifyTwoFactorCode.fulfilled, (state, action) => {
+        state.user = action.payload.user;
+        state.token = action.payload.token;
       })
       .addCase(logoutUser.fulfilled, (state) => {
         state.user = null;
+        state.token = null;
       })
       .addCase(updateUserProfile.fulfilled, (state, action) => {
         state.user = { ...state.user, ...action.payload };

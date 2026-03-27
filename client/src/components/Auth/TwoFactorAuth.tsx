@@ -1,12 +1,5 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
-import { useNavigate } from 'react-router-dom';
-import { Shield, Check } from 'lucide-react';
-
-interface TwoFactorAuthProps {
-  tempToken: string;
-  onBack: () => void;
-}
 
 const TwoFactorAuth: React.FC = () => {
   const { setup2FA, enable2FA, user } = useAuth();

@@ -1,8 +1,14 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import path from 'path';
 
 export default defineConfig({
   plugins: [react()],
+  resolve: {
+    alias: {
+      '@nexora/shared': path.resolve(__dirname, '../shared'),
+    },
+  },
   server: {
     port: 5173,
     host: true, // Listen on all addresses
@@ -10,11 +16,9 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: true, // Enable source maps for debugging
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: process.env.NODE_ENV === 'production',
-      },
+    minify: 'esbuild',
+    commonjsOptions: {
+      include: [/shared/, /node_modules/],
     },
   },
   preview: {

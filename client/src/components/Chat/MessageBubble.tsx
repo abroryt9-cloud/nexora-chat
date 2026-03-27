@@ -1,11 +1,23 @@
 import React, { useState } from 'react';
-import { IMessage } from '@nexora/shared';
-import { format } from 'date-fns';
-import { MoreVertical, Edit, Trash2, Reply } from 'lucide-react';
-import Reactions from './Reactions';
+import { MoreVertical, Edit, Trash2, Smile } from 'lucide-react';
+
+interface Message {
+  _id?: string;
+  id?: string;
+  content: string;
+  type: string;
+  senderId?: any;
+  createdAt: string;
+  edited?: boolean;
+  reactions?: Array<{
+    userId: string;
+    emoji: string;
+  }>;
+  mediaUrl?: string;
+}
 
 interface MessageBubbleProps {
-  message: IMessage;
+  message: Message;
   isOwn: boolean;
   onEdit: (id: string, newContent: string) => void;
   onDelete: (id: string) => void;
@@ -22,83 +34,152 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
   const [showMenu, setShowMenu] = useState(false);
   const [editing, setEditing] = useState(false);
   const [editContent, setEditContent] = useState(message.content);
+  const [showReactions, setShowReactions] = useState(false);
+
+  const reactions = ['👍', '❤️', '😂', '😮', '😢', '🔥'];
 
   const handleSaveEdit = () => {
     if (editContent.trim() && editContent !== message.content) {
-      onEdit(message.id, editContent);
+      onEdit(message._id || message.id || '', editContent);
     }
     setEditing(false);
   };
 
+  const formatTime = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+  };
+
+  const getMessageId = () => message._id || message.id || '';
+
   return (
     <div className={`flex ${isOwn ? 'justify-end' : 'justify-start'}`}>
-      <div
-        className={`max-w-[70%] rounded-2xl px-4 py-2 ${
-          isOwn
-            ? 'bg-blue-500 text-white'
-            : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white'
-        }`}
-      >
-        {!isOwn && (
-          <div className="text-xs text-gray-500 mb-1">{message.senderId.username}</div>
-        )}
-        {editing ? (
-          <div>
-            <input
-              value={editContent}
-              onChange={(e) => setEditContent(e.target.value)}
-              className="w-full px-2 py-1 border rounded"
-              autoFocus
-            />
-            <button onClick={handleSaveEdit} className="text-xs mt-1 underline">
-              Save
-            </button>
-          </div>
-        ) : (
-          <div className="whitespace-pre-wrap break-words">{message.content}</div>
-        )}
-        <div className="flex items-center justify-between mt-1 text-xs opacity-70">
-          <span>{format(new Date(message.createdAt), 'HH:mm')}</span>
-          {message.edited && <span className="ml-2">(edited)</span>}
-          <div className="relative">
-            <button
-              onClick={() => setShowMenu(!showMenu)}
-              className="ml-2 p-1 hover:bg-black/10 rounded"
-            >
-              <MoreVertical size={14} />
-            </button>
-            {showMenu && (
-              <div className="absolute bottom-full right-0 mb-1 bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden z-10">
-                {isOwn && (
-                  <>
+      <div className="relative group max-w-[70%]">
+        {/* Message Bubble */}
+        <div
+          className={`rounded-2xl px-4 py-3 ${
+            isOwn
+              ? 'bg-gradient-to-r from-[#6C5CE7] to-[#00D9FF] text-white'
+              : 'bg-[rgba(30,30,42,0.8)] backdrop-blur-xl border border-white/10 text-white'
+          }`}
+        >
+          {/* Content */}
+          {editing ? (
+            <div>
+              <textarea
+                value={editContent}
+                onChange={(e) => setEditContent(e.target.value)}
+                className="w-full px-2 py-1 bg-[rgba(26,29,45,0.6)] border border-white/10 rounded text-white"
+                autoFocus
+              />
+              <div className="flex gap-2 mt-2">
+                <button
+                  onClick={handleSaveEdit}
+                  className="text-xs px-3 py-1 bg-[#6C5CE7] rounded hover:opacity-90"
+                >
+                  Save
+                </button>
+                <button
+                  onClick={() => setEditing(false)}
+                  className="text-xs px-3 py-1 bg-[rgba(26,29,45,0.6)] rounded hover:opacity-90"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          ) : message.type === 'sticker' ? (
+            <div className="text-6xl">{message.content}</div>
+          ) : message.type === 'gif' ? (
+            <img src={message.mediaUrl} alt="GIF" className="rounded-lg max-w-full" />
+          ) : (
+            <div className="whitespace-pre-wrap break-words">{message.content}</div>
+          )}
+
+          {/* Footer */}
+          {!editing && (
+            <div className="flex items-center justify-between mt-1 text-xs opacity-70">
+              <span>{formatTime(message.createdAt)}</span>
+              {message.edited && <span className="ml-2">(edited)</span>}
+              
+              <div className="relative">
+                <button
+                  onClick={() => setShowMenu(!showMenu)}
+                  className="p-1 hover:bg-black/10 rounded"
+                >
+                  <MoreVertical size={14} />
+                </button>
+                
+                {showMenu && (
+                  <div className="absolute bottom-full right-0 mb-1 bg-[rgba(17,21,31,0.9)] backdrop-blur-xl border border-white/10 shadow-lg rounded-xl overflow-hidden z-50 min-w-[120px]">
+                    {isOwn && (
+                      <>
+                        <button
+                          onClick={() => {
+                            setEditing(true);
+                            setShowMenu(false);
+                          }}
+                          className="flex items-center gap-2 px-3 py-2 hover:bg-white/10 w-full text-left"
+                        >
+                          <Edit size={14} /> Edit
+                        </button>
+                        <button
+                          onClick={() => {
+                            onDelete(getMessageId());
+                            setShowMenu(false);
+                          }}
+                          className="flex items-center gap-2 px-3 py-2 hover:bg-red-500/20 w-full text-left text-red-400"
+                        >
+                          <Trash2 size={14} /> Delete
+                        </button>
+                      </>
+                    )}
                     <button
                       onClick={() => {
-                        setEditing(true);
+                        setShowReactions(!showReactions);
                         setShowMenu(false);
                       }}
-                      className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 w-full"
+                      className="flex items-center gap-2 px-3 py-2 hover:bg-white/10 w-full text-left"
                     >
-                      <Edit size={14} /> Edit
+                      <Smile size={14} /> React
                     </button>
-                    <button
-                      onClick={() => {
-                        onDelete(message.id);
-                        setShowMenu(false);
-                      }}
-                      className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 w-full text-red-500"
-                    >
-                      <Trash2 size={14} /> Delete
-                    </button>
-                  </>
+                  </div>
+                )}
+
+                {/* Reactions Picker */}
+                {showReactions && (
+                  <div className="absolute bottom-full right-0 mb-1 bg-[rgba(17,21,31,0.9)] backdrop-blur-xl border border-white/10 shadow-lg rounded-xl p-2 z-50">
+                    <div className="flex gap-1">
+                      {reactions.map((emoji) => (
+                        <button
+                          key={emoji}
+                          onClick={() => {
+                            onReaction(getMessageId(), emoji);
+                            setShowReactions(false);
+                          }}
+                          className="text-xl hover:scale-125 transition p-1"
+                        >
+                          {emoji}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 )}
               </div>
+            </div>
+          )}
+        </div>
+
+        {/* Existing Reactions */}
+        {message.reactions && message.reactions.length > 0 && (
+          <div className="absolute -bottom-3 left-2 flex gap-1 bg-[rgba(17,21,31,0.9)] backdrop-blur-xl border border-white/10 rounded-full px-2 py-1">
+            {message.reactions.slice(0, 3).map((reaction, index) => (
+              <span key={index} className="text-xs">{reaction.emoji}</span>
+            ))}
+            {message.reactions.length > 3 && (
+              <span className="text-xs text-[#8E9AAF]">+{message.reactions.length - 3}</span>
             )}
           </div>
-        </div>
-        <Reactions
-          reactions={message.reactions}
-          onAddReaction={(emoji) => onReaction(message.id, emoji)}
-        />
+        )}
       </div>
     </div>
   );

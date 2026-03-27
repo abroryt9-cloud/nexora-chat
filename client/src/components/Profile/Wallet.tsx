@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useWallet } from '../../hooks/useWallet';
-import { formatNumber } from '@nexora/shared';
 
 const Wallet: React.FC = () => {
   const { wallet, price, sendTokens, fetchWallet } = useWallet();
@@ -28,8 +27,8 @@ const Wallet: React.FC = () => {
       <div className="flex justify-between items-center">
         <div>
           <p className="text-sm text-gray-500">Balance</p>
-          <p className="text-3xl font-bold">{formatNumber(wallet.balance)} NXR</p>
-          <p className="text-sm text-gray-500">≈ ${formatNumber(wallet.balance * price)} USD</p>
+          <p className="text-3xl font-bold">{wallet.balance.toFixed(2)} NXR</p>
+          <p className="text-sm text-gray-500">≈ ${(wallet.balance * price).toFixed(2)} USD</p>
         </div>
         <div>
           <p className="text-sm text-gray-500">Address</p>

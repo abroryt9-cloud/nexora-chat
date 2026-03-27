@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser, registerUser, logoutUser, updateUserProfile, uploadUserAvatar, setupTwoFactor, enableTwoFactor, verifyTwoFactorCode } from '../store/authSlice';
 import { RootState, AppDispatch } from '../store';
@@ -16,7 +16,11 @@ export const useAuth = () => {
   }, [dispatch]);
 
   const register = useCallback(async (username: string, email: string, password: string) => {
-    await dispatch(registerUser({ username, email, password }));
+    const result = await dispatch(registerUser({ username, email, password }));
+    if (registerUser.fulfilled.match(result)) {
+      return result.payload;
+    }
+    return null;
   }, [dispatch]);
 
   const logout = useCallback(() => {
