@@ -1,1 +1,1 @@
-// logger.ts
+export const logger = {};

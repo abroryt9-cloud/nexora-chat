@@ -1,1 +1,1 @@
-// aiService.ts
+export const aiService = {};

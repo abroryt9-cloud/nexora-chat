@@ -1,1 +1,1 @@
-// emailService.ts
+export const emailService = {};

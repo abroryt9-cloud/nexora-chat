@@ -1,1 +1,1 @@
-// achievements.ts
+export const ACHIEVEMENTS = [];

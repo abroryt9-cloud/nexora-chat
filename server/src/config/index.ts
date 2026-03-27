@@ -1,1 +1,1 @@
-// index.ts - Server Configuration
+export const indexConfig = {};

@@ -1,1 +1,1 @@
-// encryptionService.ts
+export const encryptionService = {};

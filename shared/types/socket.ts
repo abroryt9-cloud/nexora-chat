@@ -1,1 +1,1 @@
-// socket.ts
+export type Socket = Record<string, unknown>;

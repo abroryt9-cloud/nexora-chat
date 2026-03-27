@@ -1,1 +1,1 @@
-// Message.ts
+export interface Message { id: string }

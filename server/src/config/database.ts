@@ -1,1 +1,1 @@
-// database.ts
+export const databaseConfig = {};

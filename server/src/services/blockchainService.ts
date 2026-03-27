@@ -1,1 +1,1 @@
-// blockchainService.ts
+export const blockchainService = {};

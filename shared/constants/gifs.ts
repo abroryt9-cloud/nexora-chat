@@ -1,1 +1,1 @@
-// gifs.ts
+export const GIFS = [];

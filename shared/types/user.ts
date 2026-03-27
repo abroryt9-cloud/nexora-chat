@@ -1,1 +1,1 @@
-// user.ts
+export type User = Record<string, unknown>;

@@ -1,1 +1,2 @@
-// server.js - Nexora Server Entry Point
+require('ts-node/register');
+require('./src/app');

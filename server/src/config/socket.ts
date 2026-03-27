@@ -1,1 +1,1 @@
-// socket.ts
+export const socketConfig = {};

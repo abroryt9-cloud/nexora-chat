@@ -1,1 +1,1 @@
-// authService.ts
+export const authService = {};

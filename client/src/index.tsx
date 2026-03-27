@@ -1,1 +1,1 @@
-// index.tsx - Nexora Client Entry Point
+import './main';

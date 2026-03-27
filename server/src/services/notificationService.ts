@@ -1,1 +1,1 @@
-// notificationService.ts
+export const notificationService = {};

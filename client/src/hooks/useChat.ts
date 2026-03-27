@@ -1,1 +1,3 @@
-// useChat.ts
+export const useChat = () => ({});
+
+export default useChat;

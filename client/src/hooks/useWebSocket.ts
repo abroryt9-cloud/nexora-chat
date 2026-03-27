@@ -1,1 +1,3 @@
-// useWebSocket.ts
+export const useWebSocket = () => ({});
+
+export default useWebSocket;

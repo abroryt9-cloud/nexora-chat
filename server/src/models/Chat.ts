@@ -1,1 +1,1 @@
-// Chat.ts
+export interface Chat { id: string }

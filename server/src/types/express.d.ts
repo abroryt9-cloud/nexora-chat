@@ -1,9 +1,6 @@
-import { IUser } from '@nexora/shared';
-
-declare global {
-  namespace Express {
-    interface Request {
-      user?: IUser & { _id: string };
-    }
+declare namespace Express {
+  interface Request {
+    userId?: string;
+    role?: string;
   }
 }

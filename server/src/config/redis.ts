@@ -1,1 +1,1 @@
-// redis.ts
+export const redisConfig = {};

@@ -1,1 +1,1 @@
-// walletService.ts
+export const walletService = {};

@@ -1,1 +1,1 @@
-// constants.ts
+export const constants = {};

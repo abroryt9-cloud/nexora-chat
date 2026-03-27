@@ -10,8 +10,8 @@
     "build:client": "cd client && npm install && npm run build",
     "build:admin": "cd admin && npm install && npm run build",
     "build:server": "cd server && npm install && npm run build",
-    "build": "npm run build:shared && npm run build:client && npm run build:admin && npm run build:server",
-    "start": "node server.js",
+    "build": "cd client && npm install && npm run build && cd ../server && npm install && npm run build",
+    "start": "cd server && npm start",
     "start:server": "cd server && npm start",
     "start:client": "cd client && npm run preview",
     "start:admin": "cd admin && npm run preview",
@@ -33,7 +33,7 @@
     "concurrently": "^8.2.0"
   },
   "engines": {
-    "node": ">=18.0.0",
+    "node": ">=20.0.0",
     "npm": ">=9.0.0"
   }
 }

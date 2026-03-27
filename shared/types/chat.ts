@@ -1,1 +1,1 @@
-// chat.ts
+export type Chat = Record<string, unknown>;

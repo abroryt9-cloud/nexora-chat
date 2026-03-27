@@ -1,1 +1,7 @@
-// aiRoutes.ts
+import { Router } from 'express';
+import { health } from '../../controllers/aiController';
+
+const router = Router();
+router.get('/', health);
+
+export default router;

@@ -1,1 +1,3 @@
-// useLanguage.ts
+export const useLanguage = () => ({});
+
+export default useLanguage;

@@ -1,1 +1,1 @@
-// Report.ts
+export interface Report { id: string }

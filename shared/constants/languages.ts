@@ -1,1 +1,1 @@
-// languages.ts
+export const LANGUAGES = [];

@@ -1,1 +1,1 @@
-// stickers.ts
+export const STICKERS = [];

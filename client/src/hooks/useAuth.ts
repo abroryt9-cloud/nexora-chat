@@ -1,1 +1,3 @@
-// useAuth.ts
+export const useAuth = () => ({});
+
+export default useAuth;

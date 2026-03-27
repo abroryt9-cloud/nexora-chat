@@ -1,1 +1,3 @@
-// useNotifications.ts
+export const useNotifications = () => ({});
+
+export default useNotifications;

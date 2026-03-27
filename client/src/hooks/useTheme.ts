@@ -1,1 +1,3 @@
-// useTheme.ts
+export const useTheme = () => ({});
+
+export default useTheme;
