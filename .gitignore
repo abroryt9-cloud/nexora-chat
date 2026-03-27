@@ -10,6 +10,9 @@ dist/
 build/
 *.tsbuildinfo
 
+# Exception: Allow client/dist for Render deployment
+!client/dist/
+
 # Environment files
 .env
 .env.local

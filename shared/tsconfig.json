@@ -6,8 +6,9 @@
     "outDir": "./dist",
     "strict": true,
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "types": ["node"]
   },
-  "include": ["types/**/*", "constants/**/*", "utils/**/*"],
+  "include": ["index.ts", "types/**/*", "constants/**/*", "utils/**/*"],
   "exclude": ["node_modules", "dist"]
 }

@@ -7,7 +7,15 @@ const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
-app.use(express.static(path.join(__dirname, '../client')));
+// Serve static files from client/dist
+app.use(express.static(path.join(__dirname, '..', 'client', 'dist')));
+
+// SPA fallback - serve index.html for all non-API routes
+app.get('*', (req, res) => {
+  if (!req.path.startsWith('/api')) {
+    res.sendFile(path.join(__dirname, '..', 'client', 'dist', 'index.html'));
+  }
+});
 
 // In-memory storage
 const users = new Map();

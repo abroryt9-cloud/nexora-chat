@@ -1,3 +1,5 @@
+import { IMessage, IReaction } from './message';
+
 export interface SocketEvents {
   // Messages
   newMessage: (message: IMessage) => void;
