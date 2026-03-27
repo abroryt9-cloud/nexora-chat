@@ -1,39 +1,30 @@
 const express = require('express');
 const http = require('http');
 const WebSocket = require('ws');
+const cors = require('cors');
 const path = require('path');
 
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
-<<<<<<< HEAD
-// Serve static files from client/dist
-app.use(express.static(path.join(__dirname, '..', 'client', 'dist')));
-
-// SPA fallback - serve index.html for all non-API routes
-app.get('*', (req, res) => {
-  if (!req.path.startsWith('/api')) {
-    res.sendFile(path.join(__dirname, '..', 'client', 'dist', 'index.html'));
-=======
 // Middleware
 app.use(express.json());
 app.use(cors({ origin: true, credentials: true }));
 
-// Раздача статики
+// Serve static files from client/dist and public
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.static(path.join(__dirname, 'client/dist')));
+app.use(express.static(path.join(__dirname, 'client', 'dist')));
 
-// API маршруты
+// API health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
-// ВСЕ остальные GET запросы — отдаём React
+// SPA fallback - serve index.html for all non-API routes
 app.get('*', (req, res) => {
   if (!req.path.startsWith('/api')) {
-    res.sendFile(path.join(__dirname, 'client/dist', 'index.html'));
->>>>>>> 1f1f77a05789d0c276fa76960eb339e3f53aa011
+    res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
   }
 });
 
