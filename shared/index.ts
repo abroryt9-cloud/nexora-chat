@@ -1,11 +1,1 @@
-export * from './types/user';
-export * from './types/chat';
-export * from './types/message';
-export * from './types/nft';
-export * from './types/api';
-export * from './types/socket';
-export * from './constants/languages';
-export * from './constants/stickers';
-export * from './constants/gifs';
-export * from './constants/achievements';
-export * from './utils/encryption';
+// index.ts - Shared Types and Constants
