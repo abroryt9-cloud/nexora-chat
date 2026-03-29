@@ -1,13 +1,21 @@
 services:
-  # Backend API (Root server.js)
+  # Backend API 
   - type: web
     name: nexora-api
     runtime: node
     plan: free
     region: frankfurt
     branch: main
-    buildCommand: npm install && npm run build
-    startCommand: npm start
+    rootDir: .
+    buildCommand: |
+      echo "📦 Installing dependencies..."
+      npm install
+      echo "🔨 Building shared types..."
+      cd shared && npm install && npm run build && cd ..
+      echo "🔨 Building server..."
+      cd server && npm install && npm run build && cd ..
+      echo "✅ Backend build complete"
+    startCommand: cd server && npm start
     healthCheckPath: /health
     envVars:
       - key: NODE_ENV
@@ -27,15 +35,22 @@ services:
       - key: CLIENT_URL
         value: https://nexora-client.onrender.com
 
-  # Frontend Client (опционально, можно объединить с backend)
+  # Frontend Client
   - type: web
     name: nexora-client
     runtime: node
     plan: free
     region: frankfurt
     branch: main
-    buildCommand: cd client && npm install && npm run build
-    startCommand: cd client && npm run preview -- --port $PORT
+    rootDir: .
+    buildCommand: |
+      echo "📦 Installing client dependencies..."
+      npm install
+      cd client && npm install
+      echo "🔨 Building client..."
+      npm run build
+      echo "✅ Client build complete"
+    startCommand: cd client && npx vite preview --port $PORT --host
     envVars:
       - key: NODE_ENV
         value: production
@@ -45,6 +60,8 @@ services:
         value: https://nexora-api.onrender.com/api/v1
       - key: VITE_WS_URL
         value: wss://nexora-api.onrender.com
+      - key: VITE_APP_TITLE
+        value: Nexora Messenger
 
 databases:
   - name: nexora-db
